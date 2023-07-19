@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+</head>
+<body>
+<!-- Navigation -->
+<div th:replace="template/fragment/nav-user.html :: fragment-nav-user"></div>
+<!--<p>이용내역 페이지 - 충전내역</p>-->
+<div class="row">
+    <div class="col-3 m-lg-2">
+
+        <div class="list-group list-group-flush">
+            <a th:href="@{/users/history/charge}" class="list-group-item list-group-item-action">충전 내역</a>
+            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                구매 내역
+            </a>
+        </div>
+    </div>
+
+
+    <div class="col-6 mt-3">
+        <h3>구매 내역 리스트</h3>
+        <div>
+            <div class="col-md-12">
+                <!-- 목록 출력 영력 -->
+                <table class="table table-horizontal table-bordered">
+                    <tr>
+                        <th>구매 일자</th>
+                        <th>구매 상품</th>
+                        <th>수량</th>
+                        <th>사용 캐시</th>
+                        <th>잔여 캐시</th>
+                    </tr>
+                    <tr th:each="orderLog: ${userOrderItemList}">
+                        <td th:text="${#temporals.format(orderLog.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${orderLog.itemName}"></td>
+                        <td th:text="${orderLog.orderItemCount}"></td>
+                        <td th:text="${orderLog.orderSpentCash}"></td>
+                        <td th:text="${orderLog.orderAfterCash}"></td>
+                    </tr>
+                </table>
+
+                <!-- 첫번째 페이지로 이동 -->
+                <a th:href="@{/users/history/purchase(page=1)}">첫 페이지 </a>
+
+                <!-- 이전 링크 활성화 비활성화 -->
+                <a th:href="${userOrderItemList.first} ? '#' : @{/users/history/purchase(page=${userOrderItemList.number})}">
+                    이전 </a>
+
+                <!-- 페이지 번호 링크(현재 페이지는 숫자만)
+                        for(int page=startPage; page<=endPage; page++)-->
+                <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+
+		<!-- 현재페이지는 링크 없이 숫자만 -->
+            <span th:if="${page == userOrderItemList.number + 1}" th:text="${page}"></span>
+                    <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
+            <span th:unless="${page == userOrderItemList.number + 1}">
+        <a th:href="@{/users/history/purchase(page=${page})}" th:text="${page}"></a>
+            </span>
+        </span>
+
+                <!-- 다음 링크 활성화 비활성화 -->
+                <a th:href="${userOrderItemList.last} ? '#' : @{/users/history/purchase(page=${userOrderItemList.number + 2})}">다음 </a>
+
+                <!-- 마지막 페이지로 이동 -->
+                <a th:href="@{/users/history/purchase(page=${userOrderItemList.totalPages})}"> 마지막 페이지</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+</body>
+</html>

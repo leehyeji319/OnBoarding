@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+    <style>
+        .search {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /*height: 100vh;*/
+            text-align: center;
+        }
+
+        .search form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<div th:replace="template/fragment/nav-admin.html :: fragment-nav-admin"></div>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="mb-3 mt-3">
+            <h3>현재 적용된 메인 아이템 리스트</h3>
+        </div>
+        <div>
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#Item Id</th>
+                    <th scope="col">대분류</th>
+                    <th scope="col">중분류</th>
+                    <th scope="col">아이템 이름</th>
+                    <th scope="col">아이템 가격</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${mainItemListDto}">
+                    <td th:text="${item.getItemId()}"></td>
+                    <td th:text="${item.getFirstCategoryName()}"></td>
+                    <td th:text="${item.getSecondCategoryName()}"></td>
+                    <td th:text="${item.getItemName()}"></td>
+                    <td th:text="${item.getItemPrice()}"></td>
+                    <td>
+                        <form th:action="@{/api/items/{itemId}/main(itemId=${item.getItemId()})}" th:method="delete">
+                            <button type="submit" class="btn btn-primary">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <br/>
+
+            <div class="search">
+                <form th:action="@{/api/items/search}" method="get">
+                    <input type="text" name="keyword" placeholder="아이템 검색"/>
+                    <button type="submit" class="btn btn-dark">검색</button>
+                </form>
+            </div>
+
+            <section id="searchResult" th:if="${not #strings.isEmpty(itemSearchResultList)}">
+                <p>메인에 들어가지 않은 아이템 검색 결과</p>
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">#Item Id</th>
+                        <th scope="col">대분류</th>
+                        <th scope="col">중분류</th>
+                        <th scope="col">아이템 이름</th>
+                        <th scope="col">아이템 가격</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="searchItem : ${itemSearchResultList}" th:onclick="">
+                        <td th:text="${searchItem.getItemId()}"></td>
+                        <td th:text="${searchItem.getFirstCategoryName()}"></td>
+                        <td th:text="${searchItem.getSecondCategoryName()}"></td>
+                        <td th:text="${searchItem.getItemName()}"></td>
+                        <td th:text="${searchItem.getItemPrice()}"></td>
+                        <td>
+                            <form th:action="@{/api/items/{itemId}/main(itemId=${searchItem.getItemId()})}"
+                                  th:method="put">
+                                <button type="submit" class="btn btn-primary">추가</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${itemSearchResultList.size() == 0}">
+                        <td colspan="4">이런, 아이템이 모두 메인에 들어갔어요!</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+    <div class="col-3"></div>
+
+</div>
+
+
+<script th:inline="javascript">
+    function confirmAddItem(row) {
+        var itemId = row.cells[0].textContent;
+        var itemName = row.cells[1].textContent;
+        var confirmMessage = '메인 아이템에 추가하시겠습니까?\n\n아이템 ID: ' + itemId + '\n이름: ' + itemName;
+
+        if (confirm(confirmMessage)) {
+            // 예 버튼 클릭 시 수행할 작업
+            // 예를 선택한 경우에는 추가 작업을 수행하도록 원하는 코드를 작성합니다.
+            location.href = "/admin/items/" + itemId;
+
+        } else {
+            // 아니오 버튼 클릭 시 수행할 작업
+            // 아니오를 선택한 경우에는 추가 작업을 수행하지 않도록 원하는 코드를 작성합니다.
+        }
+    }
+</script>
+
+</body>
+</html>

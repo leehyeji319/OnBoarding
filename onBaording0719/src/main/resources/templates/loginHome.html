@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+<style>
+    /*.h-25 {*/
+    /* height: 207px!important;*/
+    /*}*/
+</style>
+</head>
+<body>
+<!--Navigation-->
+<div th:replace="template/fragment/nav-user.html :: fragment-nav-user"></div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <br/>
+        <div class="row">
+            <div class="col-9">
+                <div class="row-10">
+                    <div id="carouselExampleIndicators" class="carousel slide d-flex justify-content-center align-items-center mb-3"
+                         data-bs-ride="carousel">
+                        <div class="carousel-indicators carousel-dark">
+                            <button th:each="banner, bannerStat : ${bannerList}" type="button"
+                                    data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${bannerStat.index}"
+                                    th:classappend="${bannerStat.index == 0 ? 'active' : ''}"
+                                    th:attr="aria-current=${bannerStat.index == 0 ? 'true' : 'false'}, aria-label='Slide ' + ${bannerStat.index + 1}"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div th:each="banner, bannerStat : ${bannerList}"
+                                 th:classappend="${bannerStat.index == 0 ? 'carousel-item active' : 'carousel-item'}">
+                                <a th:if="${banner.itemId != null}" th:href="@{/api/items/{itemId}(itemId=${banner.itemId})}">
+                                    <img th:src="${banner.saveFolderPath}" class="d-block w-70 img-fluid mx-auto" alt="...">
+                                </a>
+                                <a th:unless="${banner.itemId != null}" href="#">
+                                    <img th:src="${banner.saveFolderPath}" class="d-block w-70 img-fluid mx-auto" alt="...">
+                                </a>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <!--                <p> 아이템 리스트 가져오는 곳</p>-->
+                    <div id="items-row" class="mb-3">
+                        <div class="row row-cols-1 row-cols-md-4 g-4">
+                            <div th:each="item, stat : ${mainItemListWithUserForRow}">
+                                <div class="col">
+                                    <div class="card" style="width: 100%;">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 6rem; justify-content: center; align-content: center;">
+<!--                                            <img src="http://file.estgames.co.kr/generic/portal_user_admin/20220512/6446dfd142ad" style="width:80%; height: 80%;">-->
+                                            <img th:if="${item.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}" style="width:80%; height: 80%;">
+                                            <img th:unless="${item.itemImgDto == null}" th:src="${item.itemImgDto.saveFolderPath}" style="width:80%; height: 80%;">
+                                        </div>
+                                        <div class="card-body">
+<!--                                            <h6 class="card-title" th:text="${item.getItemName()}">item name</h6>-->
+                                            <h6 class="card-title">
+                                                <a th:href="@{/api/items/{itemId}(itemId=${item.itemId})}">
+                                                    <span class="card-title-full" th:text="${item.getItemName()}"></span>
+                                                    <span class="card-title-truncated"></span>
+
+                                                </a>
+
+                                            </h6>
+                                            <p class="card-text" th:text="${item.getItemPrice()} + ' 원'">item price</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row g-0">
+                                                <div class="col">
+                                                    <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="delete">
+                                                        <button th:if="${item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에서 삭제되었습니다.')"><img th:src="@{/img/heart.png}" width="15px" height="15px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button th:if="${!item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에 추가되었습니다.')"><img th:src="@{/img/empty-heart.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-10"></div>
+            </div>
+
+
+            <div class="col-3">
+<!--                <p>아이템 리스트 세로로 가져오는 곳</p>-->
+                <div class="row-10">
+                    <div id="items-column" class="mb-3">
+                        <div class="row row-cols-1 row-cols-md-1 g-1">
+                            <div th:each="item, stat : ${mainItemListWithUserForColumn}">
+                                <div class="col">
+                                    <div class="card" style="width: 70%; height: 50%">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 6rem; justify-content: center; align-content: center;">
+<!--                                            <img src="http://file.estgames.co.kr/generic/portal_user_admin/20220512/6446dfd142ad" style="width:80%; height: 80%;">-->
+                                            <img th:if="${item.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}" style="width:80%; height: 80%;">
+                                            <img th:unless="${item.itemImgDto == null}" th:src="${item.itemImgDto.saveFolderPath}" style="width:80%; height: 80%;">
+                                        </div>
+
+                                        <div class="card-body">
+<!--                                            <h6 class="card-title" th:text="${item.getItemName()}">잘왓다잘왓어</h6>-->
+                                            <h6 class="card-title">
+                                                <a th:href="@{/api/items/{itemId}(itemId=${item.itemId})}">
+                                                    <span class="card-title-full" th:text="${item.getItemName()}"></span>
+                                                    <span class="card-title-truncated"></span>
+
+                                                </a>
+
+                                            </h6>
+                                            <p class="card-text" th:text="${item.getItemPrice()} + ' 원'">item price</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row g-0">
+                                                <div class="col">
+                                                    <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="delete">
+                                                        <button th:if="${item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에서 삭제되었습니다.')"><img th:src="@{/img/heart.png}" width="15px" height="15px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button th:if="${!item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에 추가되었습니다.')"><img th:src="@{/img/empty-heart.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-2"></div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-3"></div>
+
+
+</div>
+
+<script th:inline="javascript">
+    function showAlert(message) {
+        alert(message);
+    }
+
+    //제목이 길면 짤라주는 코드
+    /*<![CDATA[*/
+    var cardTitlesFull = document.querySelectorAll(".card-title-full");
+    var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
+    var maxLength = 7; // 제목의 최대 길이 설정
+
+    Array.from(cardTitlesFull).forEach(function(titleFull, index) {
+        var titleTruncated = cardTitlesTruncated[index];
+
+        if (titleFull.textContent.length > maxLength) {
+            titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
+            titleFull.style.display = "none";
+            titleTruncated.style.display = "inline";
+        } else {
+            titleFull.style.display = "inline";
+            titleTruncated.style.display = "none";
+        }
+    });
+    /*]]>*/
+
+</script>
+
+</body>
+</html>

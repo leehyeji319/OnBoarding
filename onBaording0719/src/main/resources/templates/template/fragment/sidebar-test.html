@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="fragment-sidebar-test">
+
+    <div class="side_menu" style="overflow-y: scroll; height: 200px;">
+        <ul>
+            <li><a th:href="@{/admin/items}">전체</a></li>
+            <li th:each="category : ${categoryList}">
+                <a href="#" th:text="${category.categoryParentName}"
+                   th:attr="data-categoryId=${category.categoryParentId}"
+                   th:onclick="'loadItems(' + ${category.categoryParentId} + ')'"></a>
+                <ul>
+                    <li th:each="childCategory : ${category.categoryChildDtoList}">
+                        <a href="#" th:text="${childCategory.categoryChildName}"
+                           th:attr="data-categoryId=${childCategory.categoryChildId}"
+                           th:onclick="'loadItems(' + ${childCategory.categoryChildId} + ')'"></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+</html>

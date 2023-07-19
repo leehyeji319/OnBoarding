@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+</head>
+<body>
+<!-- Navigation -->
+<div th:replace="template/fragment/nav-user.html :: fragment-nav-user"></div>
+<br/>
+    <div class="row">
+        <div class="col-3">
+            <h2 class="m-lg-2">즐겨찾기</h2>
+        </div>
+        <div class="col-6">
+            <div id="items-row" class="mb-3">
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    <div th:each="item, stat : ${starItemList}">
+                        <div class="col">
+                            <div class="card h-30" style="width: 10rem;">
+                                <div class="d-flex align-items-center justify-content-center" style="height: 6rem; justify-content: center; align-content: center;">
+                                    <img src="http://file.estgames.co.kr/generic/portal_user_admin/20220512/6446dfd142ad"
+                                         style="width:auto; height: 97px;">
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <span class="card-title-full" th:text="${item.getItemName()}"></span>
+                                        <span class="card-title-truncated"></span>
+                                    </h6>
+                                    <p class="card-text" th:text="${item.getItemPrice()} + ' 원'">item price</p>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row g-0">
+                                        <div class="col">
+                                            <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="delete">
+                                                <button th:if="${item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에서 삭제되었습니다.')"><img th:src="@{/img/heart.png}" width="15px" height="15px" alt=""></button>
+                                            </form>
+                                        </div>
+                                        <div class="col">
+                                            <form th:action="@{/api/star/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                <button th:if="${!item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에 추가되었습니다.')"><img th:src="@{/img/empty-heart.png}" width="20px" height="20px" alt=""></button>
+                                            </form>
+                                        </div>
+                                        <div class="col">
+                                            <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>
+                                            </form>
+                                        </div>
+                                        <div class="col">
+                                            <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
+                                                <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div th:if="${starItemList.size() == 0}">
+                <h2>즐겨찾기에 추가된 상품이 없어요!</h2>
+            </div>
+        </div>
+        <div class="col-3"></div>
+
+    </div>
+</body>
+<script th:inline="javascript">
+    //제목 길면 짤리는 거
+    /*<![CDATA[*/
+    var cardTitlesFull = document.querySelectorAll(".card-title-full");
+    var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
+    var maxLength = 7; // 제목의 최대 길이 설정
+
+    Array.from(cardTitlesFull).forEach(function(titleFull, index) {
+        var titleTruncated = cardTitlesTruncated[index];
+
+        if (titleFull.textContent.length > maxLength) {
+            titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
+            titleFull.style.display = "none";
+            titleTruncated.style.display = "inline";
+        } else {
+            titleFull.style.display = "inline";
+            titleTruncated.style.display = "none";
+        }
+    });
+    /*]]>*/
+</script>
+</html>

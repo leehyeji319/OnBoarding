@@ -1,0 +1,53 @@
+<div class="row" th:fragment="itemList" xmlns:th="http://www.thymeleaf.org">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div th:each="item, stat : ${itemList}">
+            <div class="col">
+<!--                <div class="card h-100" style="width: 18rem;">-->
+                <div class="card" style="width: 100%;">
+<!--                    <img src="http://file.estgames.co.kr/generic/portal_user_admin/20200902/e4f2de04663c" style="width:100%">-->
+<!--                    <img th:if="${item.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}" style="width:80%; height: 80%;">-->
+<!--                    <img th:unless="${item.itemImgDto == null}" th:src="${item.itemImgDto.saveFolderPath}" style="width:80%; height: 80%; max-width: 200px;">-->
+                    <div class="d-flex align-items-center justify-content-center"
+                         style="height: 6rem; justify-content: center; align-content: center;">
+                        <!--                        <img src="http://file.estgames.co.kr/generic/portal_user_admin/20220512/6446dfd142ad" style="width:80%; height: 80%;">-->
+                        <img th:if="${item.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}" style="width:80%; height: 80%;">
+                        <img th:unless="${item.itemImgDto == null}" th:src="${item.itemImgDto.saveFolderPath}" style="width:80%; height: 80%;">
+                    </div>
+                    <div class="card-body">
+<!--                        <h5 class="card-title" th:text="${item.getItemName()}">item name</h5>-->
+                        <a th:href="@{/api/items/{itemId}/admin(itemId=${item.itemId})}">
+                            <span class="card-title-full" th:text="${item.getItemName()}"></span>
+                            <span class="card-title-truncated"></span>
+
+                        </a>
+                        <!--            <p class="card-text" th:text="${item.getItemPrice(원}">item price</p>-->
+                        <p class="card-text" th:text="${item.getItemPrice()} + ' 원'">item price</p>
+                        <input type="hidden" class="item-id" th:value="${item.getItemId()}" />
+
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <form th:action="@{/admin/items/{itemId}/modify(itemId=${item.getItemId()})}"
+                                      th:method="post">
+                                    <button type="submit" class="btn btn-primary"
+                                            onclick="return confirm('정말 수정하시겠습니까?');">수정
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <form th:action="@{/api/items/{itemId}(itemId=${item.getItemId()})}" th:method="delete"
+                                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                    <button type="submit" class="btn btn-danger">삭제</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

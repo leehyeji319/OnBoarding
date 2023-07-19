@@ -1,0 +1,375 @@
+<div th:fragment="charge-modal" xmlns:th="http://www.w3.org/1999/html">
+    <div class="modal fade" id="chargeModal" aria-hidden="true" aria-labelledby="chargeModalLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chargeModalLabel" style="text-align: center">캐시 충전하기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height: 1000px; overflow-y: auto;">
+                    <div class="col">
+                        <h4>현재 보유 캐시 <img th:src="@{/img/coin.png}" width="15px" height="15px" alt=""
+                                          th:text="${session.loginUser.getCash()}"></h4>
+                    </div>
+
+                    <p>충전 수단과 충전 금액을 선택하세요. (1,000원 = 1,000cash)</p>
+                    <table class="tb_style1 table-bordered">
+                        <tbody>
+                        <tr>
+                            <th scope="row">충전 방법</th>
+                            <td class="method">
+                                <ul id="chargeMethod">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="col">
+                                                <div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="method" id="m1"
+                                                        >
+                                                        <label class="form-check-label" for="m1">휴대폰</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="method" id="m2"
+                                                        >
+                                                        <label class="form-check-label"
+                                                               for="m2">문화상품권</label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="method" id="m3"
+                                                        >
+                                                        <label class="form-check-label" for="m3">신용카드</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="method" id="m4"
+                                                        >
+                                                        <label class="form-check-label"
+                                                               for="m4">도서문화상품권</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="method" id="m5">
+                                                    <label class="form-check-label" for="m5">실시간 계좌이체</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="method" id="m6">
+                                                    <label class="form-check-label"
+                                                           for="m6">스마트문상(게임문화상품권)</label>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="method" id="m7">
+                                                    <label class="form-check-label" for="m7">무통장
+                                                        입금(가상계좌)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="last">충전 금액</th>
+                            <td class="cash last">
+                                <ul>
+                                    <div class="row">
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c1"
+                                                >
+                                                <label class="form-check-label" for="c1">1,000원</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c2"
+                                                >
+                                                <label class="form-check-label" for="c2">3,000원</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c3"
+                                                >
+                                                <label class="form-check-label" for="c3">5,000원</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c4"
+                                                >
+                                                <label class="form-check-label" for="c4">10,000원</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c5"
+                                                >
+                                                <label class="form-check-label" for="c5">20,000원</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c6"
+                                                >
+                                                <label class="form-check-label" for="c6">30,000원</label>
+                                            </div>
+
+                                        </div>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c7"
+                                                >
+                                                <label class="form-check-label" for="c7">50,000원</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cash" id="c8"
+                                                >
+                                                <label class="form-check-label" for="c8">100,000원</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-target="#chargeModal2" data-bs-toggle="modal"
+                            data-bs-dismiss="modal">확인
+                    </button>
+                    <button class="btn btn-primary" data-bs-target="" data-bs-toggle="modal"
+                            data-bs-dismiss="modal">취소
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="chargeModal2" aria-hidden="true" aria-labelledby="chargeModalLabel2"
+         tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chargeModalLabel2">약관 동의</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col">
+                        <h4>현재 보유 캐시 <img th:src="@{/img/coin.png}" width="15px" height="15px" alt=""
+                                          th:text="${session.loginUser.getCash()}"></h4>
+                    </div>
+                    <div class="row">
+
+                        <div class="mb-3">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>충전 ID</td>
+                                    <td th:text="${session.loginUser.getLoginId()}"></td>
+                                </tr>
+                                <tr>
+                                    <td>충전 금액</td>
+                                    <td><span id="chargeAmount"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>충전 수단</td>
+                                    <td><span id="chargeMethodWay"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div>
+                            <textarea class="form-control mb-3"
+                                      style="overflow-y: auto; height: 150px; /* 세로 스크롤을 적용할 높이 설정 */" disabled>
+                                제 1 조 [목적]
+
+이 약관은 (주)이스트게임즈(이하 '회사'라 칭함)의 인터넷 게임 서비스 카발 온라인 및 게임 홈페이지 (www.cabal.co.kr)에 제공되는 각종 유료 컨텐츠의 서비스 이용을 위해 '카발 온라인 캐시'의 이용조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.
+
+제 2 조 [약관의 효력 및 변경]
+
+본 약관의 내용은 홈페이지 및 서비스 화면에 이를 공지하거나 전자우편 등의 방법으로 회원에게 공지함으로써 효력이 발생됩니다.
+'회사'는 본 약관의 내용에 있어 합리적인 변경 사유가 발생할 시, 이를 변경할 수 있습니다.
+'회사'는 약관의 규제에 관한 법률, 전자거래기본법, 전자상거래 등에서의 소비자보호에 관한 법률, 정보통신망이용촉진 및 정보보호 등에 관한 법률 등 관계법령에 위배되지 않는 범위 안에서 이 약관을 변경할 수 있으며 '회사'는 약관을 변경할 경우 적용일자 및 개정사유를 명시하여, 현행 약관과 함께 카발 온라인 홈페이지에 그 적용일자 최소 7일 이전부터 적용일자까지 공지하며, 적용 일에 효력이 발생합니다.
+
+제 3 조 [용어의 정의]
+
+카발 온라인 캐시 : 카발 온라인 캐시(이하 '캐시'라 칭함)는 '회사'가 제공하는 서비스 중 일부 유료서비스를 구입하거나 이용할 수 있도록 만들어진 사이버머니입니다.
+충전 : '캐시'를 일정량 충전하기 위해서 '회사'가 정한 특정 결제수단 중 회원이 원하는 결제수단을 선택하여 현금을 '회사'에 지불하는 행위이며 현금 1원당 '캐시' 1원이 충전되어집니다.
+구매 : 충전된 '캐시'로 '회사'가 제공하는 유료 서비스를 이용하는 행위를 말합니다.
+환불 : 충전된 내역을 본 정책 8조의'캐시의 환불' 기준에 의거 '회사'가 정한 지불수단을 통한 '캐시' 잔액을 현금으로 되돌려 받거나, 지불수단의 결제 승인취소를 통하여, 결제가 이루어 지지 않도록 하는 것을 말합니다.
+카발 온라인 보너스 캐시: '회사'에서 게임의 활성화를 위하여, 이벤트 및 프로모션을 통한 무상 발행으로 이용자에게 지급되는 '캐시' 또는 카발 상품권(브론즈, 실버, 골드)을 사용하여 이용자에게 지급되는 '캐시'를 말합니다. '카발 온라인 캐시'와 같이 카발 온라인의 유료 컨텐츠를 이용하는데 사용하며, 환불되지 않습니다.
+아이템 샵 : 카발 온라인 유료 컨텐츠를 구입할 수 있는 페이지(창)를 말합니다.
+유료 컨텐츠 : 이용자가 게임 내에서 사용 가능한 특정한 효과 또는 효능을 향유할 수 있는 온라인 컨텐츠를 의미합니다. 사용기간이 별도로 명시된 유료 컨텐츠의 경우는 구매 시 명시된 사용 기간에 따릅니다. 유료 컨텐츠는 아이템 샵에서 구입할 수 있는 모든 아이템을 말합니다.
+캐시 인벤토리 : 아이템 샵을 통해 구입된 유료 컨텐츠가 카발 온라인 게임 내 지급되는 장소를 말합니다.
+미성년 이용자 : 미성년 이용자(이하 '미성년자'라 칭함)는 이용자 중 만19세 미만인 이용자를 의미합니다.
+
+제 4 조 ['캐시' 충전]
+
+'캐시'의 충전은 카발 온라인의 회원만 가능합니다.
+'캐시'충전은 이용자가 각 결제수단에 따라 회사가 정한 방법으로 '캐시'충전을 진행할 수 있습니다.
+'캐시'의 충전 금액은 필요한 경우 '회사'가 기간별 최고 한도액을 정할 수 있으며, 이와는 별도로 고객이 지정한 결제 수단에 따라 한도 금액이 정해질 수 있습니다.
+미성년자가 캐시를 충전할 때에는 법정대리인의 동의를 받아야 합니다.
+카발 온라인 회원의 각 계정에 총 충전할 수 있는 '캐시'는 만 19세 미만의 미성년자의 경우 월 7만원, 성인의 경우 월 100만원 입니다.
+각 계정의 '캐시' 충전 한도는 카발 온라인 회원이 고객센터로 한도 상향을 요청하여 별도 충전 한도가 부여될 수 있습니다.
+회원이 지정한 특정 결제수단으로 충전하는 경우 개별 결제수단을 제공하는 각 서비스사의 결제 규정에도 동의한 것으로 간주하며 각각의 서비스를 통해 충전할 수 있는 한도도 각 서비스 제공사가 정하는 기준에 따르게 됩니다. 다만, 회사의 사정에 따라 특정 결제수단이 추가되거나 서비스제공이 중단될 수 있습니다.
+
+제 5 조 ['캐시' 결제에 대한 승인 및 이용제한]
+
+'회사'는 다음의 각 항에 해당하는 이용신청에 대해서는 승인을 하지 않거나, 추후 해당 승인을 취소할 수 있으며, 서비스 이용 제한 또는 계정 및 게임 컨텐츠를 삭제(회수)할 수 있습니다.
+(1) 이용 요금을 납부하지 않거나 납부자를 확인할 수 없는 경우
+(2) 법정대리인의 동의없이 신청한 경우.
+단, 미성년자가 사술로써 '회사'로 하여금 법정대리인의 동의가 있는 것으로 믿게 한 때와 다른 성년의 주민등록번호를 이용하여, 회원가입을 하여 회사로 하여금 성년자로 판단하게 하는 경우 해당 '캐시'를 결제한 행위를 취소하지 못합니다.
+(3) 이용신청자의 귀책사유로 승인이 불가능하다고 판단되는 경우
+(4) 타인의 결제 정보 등을 도용하거나 부정한 행위로 거래를 하는 경우
+(5) 타인의 명의나 개인정보를 도용하여 서비스를 이용하는 경우
+(6) '캐시' 서비스에 대한 권리를 제 3 자에게 양도, 매매하는 경우
+(7) 결제 수단을 악용하여 불법적인 행위를 하는 경우
+(8) 해킹 또는 기타 시스템에 무리를 주는 경우
+(9) 기타 이용약관을 위반하여 서비스를 이용하는 경우
+'회사'는 다음의 각 항에 해당하는 경우에는 이용신청에 대한 승인 제한 사유가 해소될 때까지 승인을 제한할 수 있습니다.
+(1) 서비스 설비가 부족하여 만족스러운 서비스를 제공할 수 없다고 판단될 경우
+(2) 서비스 상의 장애가 발생한 경우
+(3) 각 결제 수단 제공 업체의 장애, 점검 등으로 결제수단에 장애가 발생하여 결제 서비스 제공이 불가능한 경우
+'회사'는 본 서비스를 이용하는 회원에 대하여 회원을 등급별로 구분하여 '캐시' 충전한도, 이용시간, 이용횟수, 서비스 등을 세분하여 이용에 차등을 두어 적용할 수 있습니다.
+
+제 6 조 ['캐시'의 사용]
+
+'캐시'는 '회사'의 게임 및 유료 컨텐츠 이용료를 결제하는데 이용되며 제4조[캐시 충전]을 통해 충전된 캐시가 먼저 사용됩니다.
+'회사'의 게임서비스에 중대한 하자에 의해 컨텐츠가 손상, 훼손, 삭제되었거나 불량했을 경우 '회사'의 판단에 따라 '캐시'의 재충전, 또는 해당 컨텐츠의 복원 등으로 보상 받을 수 있습니다.
+단, '회사'의 서비스 이용과 관련하여 '회사'의 귀책 사유로 인해 발생되지 않은 회원의 손실에 대해서는 일체의 책임을 지지 않습니다.
+'캐시' 잔액에 대한 이자수익은 발생하지 않습니다.
+
+제 7 조 ['캐시' 서비스 이용 수수료]
+
+'회사'는 '캐시' 서비스의 원활한 운영을 위하여 회원에게 소정의 서비스 이용 수수료를 부과할 수 있으며, '캐시' 최종사용 일을 기준으로 12개월간 미 사용한 경우 1,000원을 이용 수수료로 부과하며 '캐시'잔액이 0원 이하일 경우 이용수수료를 부과하지 않습니다.
+
+제 8 조 ['캐시'의 환불]
+
+회원이 '캐시'의 환불을 요청하면 적법한 절차에 따라 '캐시'를 환불 받을 수 있습니다.
+캐시 충전 후 미사용 캐시에 대한 결제취소는 충전 후 7일 이내 이용자가 결제취소를 요청하고 회사가 이를 수신한 경우에 수수료 부과 없이 결제취소가 가능합니다. 7일이 지난 후에는 결제취소가 불가능하며 제 9 조 ['캐시'의 환불절차]에 따라 미사용 캐시의 10%를 결제수수료로 공제한 후 이용자의 통장으로 환불처리가 됩니다.
+남아있는 캐시의 환불 시에는 캐시 충전 후 사용된 캐시를 빼고 현재 남아있는 경우 캐시잔액의 10%를 결제수수료로 공제한 금액을 환불해 드리며 최소 결제 수수료는 1,000원이고 캐시 잔액이 1,000원 이하일 때에는 환불이 가능하지 않습니다.
+캐시 충전 방법 중 휴대폰, 신용카드 결제의 경우 충전 후 7일 이내에 결제취소를 요청하더라도 월(月)이 바뀌었을 시 결제취소가 불가능하며 제 9 조 ['캐시'의 환불절차]에 따라 이용자의 통장으로 환불처리가 됩니다.
+결제 수단별 캐시 환불은 아래 기준으로 처리합니다.
+- 휴대폰, 신용카드 : 결제 당월 처리 시 결제 취소, 월(月)이 바뀌었을 시 통장 환불
+- 문화상품권, 도서문화상품권, 실시간 계좌이체, 스마트문상(게임문화상품권), 무통장 입금(가상계좌) : 통장 환불
+프리미엄 이용권의 환불은 가능 하며 캐시로만 환불되어지고 7일 이상 사용 후 환불 시의 환불 금액은 [결제캐시 - (일단위 캐시 * 사용일수) - 환불수수료]후 캐시로 환불 되어지고 7일 미만일 경우의 환불 금액은 [결제캐시 - (일단위 캐시 * 사용일수)]로 환불되며 환불 적용일은 캐시환불과 같은 방식입니다.
+위 6항의 경우는 서비스 이용 형태의 특성상 플래티넘 및 실버 아이템 이용 계정에 한합니다.
+회원탈퇴신청 시 '캐시'의 잔액이 있을 경우 본 약관 제 9 조 ['캐시'의 환불절차]에 의거하여 해당 '캐시'에 대한 잔액 환불 요청을 할 수 있으며, 회원탈퇴 완료 이후 잔액 환불은 되지 않습니다. 단, 잔액 포기에 대한 이용자의 명시적 의사표현이 있으면 회원탈퇴신청이 가능하며, 이용자의 모든 '캐시'는 자동 소멸합니다. 이후 회원탈퇴철회에 의하여 이용자의 계정이 복구되었다 하더라도 이용자의 '캐시'는 복구되지 않습니다.
+환불 신청 계정(ID)의 명의와 은행계좌의 명의가 동일 하여야 합니다.
+단, 미성년자의 경우 법정 대리인의 캐시 이용 동의가 있을 시 법정 대리인의 계좌로 환불 금액 입금이 가능 합니다.
+다음 각 호에 해당하는 경우에는 환불이 불가능합니다.
+(1) 카발 온라인 보너스 캐시
+(2) 환불대상 금액이 1,000 원 이하인 경우
+(3) 이미 구입하여 사용 ( 또는 보유 ) 중인 캐시 아이템
+
+제 9 조 ['캐시'의 환불절차]
+
+본 약관 제 8 조 ['캐시'의 환불]에 의거한 환불에 대한 신청은 카발 온라인 고객센터(1:1문의 > 요금결제 및 환불)를 통해 접수합니다.
+회원은 반드시 카발 온라인 고객센터(1:1문의 > 요금결제 및 환불)를 통해 환불 요청을 하여야 하며, 회사는 소정의 절차를 거쳐서 회원에게 환불합니다.
+회사는 환불 신청 접수 건에 대해 환불 절차에 따라 회수 또는 삭제일로 부터 3영업일 이내 회원에게 환불합니다.
+
+제 10 조 [‘유료 컨텐츠’이용 및 환불]
+
+’유료 컨텐츠’는 충전된 캐시를 사용하여 아이템 샵을 통해 회원이 원하는 유료 컨텐츠를 구입할 수 있습니다.
+아이템 샵을 통해 구입한 유료 컨텐츠는 카발 온라인 게임 내 캐시 인벤토리로 지급되며 캐시 인벤토리에 보관된 유료 컨텐츠는 구입 일자로부터 7일 이내 회원의 요청에 따라 캐시로 환불이 가능합니다. 단, 캐시 인벤토리에서 수령한 유료 컨텐츠는 캐시로 환불이 불가능합니다.
+
+제 11 조 [과오금]
+
+회사는 과오금이 발생한 경우 이용대금의 결제와 동일한 방법(결제취소)으로 과오금 전액을 환불하여야 합니다. 다만, 동일한 방법(ARS, 휴대폰 결제 등)으로 환불이 불가능할 때는 본약관 제 9 조 ['캐시'의 환불절차]에 의거하여 회원에게 환불합니다.
+회사의 책임 있는 사유로 과오금이 발생한 경우 회사는 계약비용, 수수료 등에 관계없이 과오금 전액을 환불합니다. 다만, 이용자의 책임 있는 사유로 과오금이 발생한 경우, 회사가 과오금을 환불하는 데 소요되는 비용은 합리적인 범위 내에서 이용자가 부담하여야 합니다.
+회사는 이용자가 주장하는 과오금에 대해 환불을 거부할 경우에 정당하게 이용대금이 부과되었음을 입증할 책임을 집니다.
+회사는 과오금의 환불절차를 디지털콘텐츠이용자보호지침에 따라 처리합니다.
+
+제 12 조 [개인정보의 보호]
+
+회사는 '캐시' 서비스와 관련한 회원의 정보를 본 이용계약상의 서비스 제공을 위한 목적으로만 사용하며 본인의 사전 동의 없이 제 3자에게 누설 또는 배포할 수 없습니다. 그러나 다음 각 호에 해당하는 경우에는 그렇지 않습니다.
+(1) 관계 법령에 의하여 수사상의 목적으로 관계기관으로부터 요구가 있는 경우
+(2) 정보통신윤리위원회의 요청이 있는 경우
+(3) 기타 관계법령에서 정한 절차에 따른 요청이 있는 경우
+회사는 휴대폰결제와 관련하여 고객의 이의제기가 있는 경우 또는 이에 준하는 사안으로 휴대폰결제중재센터의 요청이 있는 경우, 문제해결을 위해 필요한 범위 내에서 서비스와 관련된 회원의 정보를 휴대폰결제 중재센터에 제공할 수 있습니다.
+기타 개인정보 보호와 관련된 사항은 회사의 '개인정보 및 청소년 보호정책'에 따릅니다.
+
+제 13 조 ['회사'의 의무]
+
+'회사'는 제 15 조 상의 면책조항에 해당하지 않는 범위에서 서비스를 정상적으로 이행하여야 합니다.
+
+제 14 조 [서비스 제공의 중지]
+
+'회사'는 다음 각 호에 해당하는 경우 서비스 제공을 중지할 수 있습니다.
+(1) 서비스용 설비의 보수 등 공사로 인한 부득이한 경우
+(2) 전기통신사업법에 규정된 기간통신사업자가 전기통신서비스를 중지했을 경우
+(3) 기타 불가항력적 사유가 있는 경우
+'회사'는 국가비상사태, 정전, 서비스 설비의 장애 또는 서비스 이용의 폭주 등으로 정상적인 서비스 이용에 지장이 있는 때에는 서비스의 전부 또는 일부를 제한하거나 정지 할 수 있습니다.
+
+제 15 조 [면책조항]
+
+'회사'는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우 에는 서비스 제공에 관한 책임이 면제됩니다.
+'회사'는 회원의 귀책사유로 인한 서비스 이용의 장애에 대하여 책임을 지지 않습니다.
+'회사'는 회원이 서비스를 이용하여 기대하는 수익을 상실한 것에 대하여 책임을 지지 않으며 그밖에 서비스를 통하여 얻은 자료로 인한 손해에 관하여 책임을 지지 않습니다.
+'회사'는 회원이 서비스에 게재한 정보, 자료, 사실의 신뢰도, 정확성 등 내용에 관하여는 책임을 지지 않습니다.
+회사는 관련 법령, 정부 정책 등에 따라 서비스 또는 회원에 따라 서비스 이용시간을 제한할 수 있으며, 이러한 제한 사항 및 제한에 따라 발생하는 게임 이용 관련 제반 사항에 대해서는 책임을 부담하지 않습니다.
+
+제 16 조 [관할법원]
+
+요금 등 서비스 이용으로 발생한 분쟁에 대해 소송이 제기될 경우 민사소송법에 의거한 법원을 전속 관할법원으로 합니다.
+'회사'와 이용고객 사이에 서비스 이용과 관련하여 발생한 분쟁에 관하여는 대한민국 법을 적용합니다.
+부칙(2006.08.11)
+본 약관은 2006년 8월 11일부터 시행합니다.
+부칙(2007.02.02)
+이 약관은 2007년 2월 14일부터 시행합니다.
+부칙(2011.10.21)
+이 약관은 2011년 10월 28일부터 시행합니다.
+부칙(2012.07.04)
+이 약관은 2012년 08월 08일부터 시행합니다.
+부칙(2013.02.13)
+이 약관은 2013년 02월 20일부터 시행합니다.
+부칙(2013.05.21)
+이 약관은 2013년 05월 28일부터 시행합니다.
+부칙(2013.07.11)
+이 약관은 2013년 07월 18일부터 시행합니다.
+부칙(2014.10.24)
+이 약관은 2014년 11월 01일부터 시행합니다.
+부칙(2015.06.19)
+이 약관은 2015년 06월 26일부터 시행합니다.
+부칙(2016.01.18)
+이 약관은 2016년 02월 17일부터 시행합니다.
+부칙(2019.10.14)
+이 약관은 2019년 10월 23일부터 시행합니다.
+부칙(2022.12.21)
+이 약관은 2023년 01월 01일부터 시행합니다.
+</textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="agreementCheckbox" required>
+                        <label class="form-check-label" for="agreementCheckbox">
+                            아이템샵 이용약관에 동의합니다.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-primary" data-bs-target="#chargeModal" data-bs-toggle="modal"
+                            data-bs-dismiss="modal">이전으로
+                    </button>
+                    <button class="btn btn-primary" data-bs-target="" data-bs-toggle="modal" data-bs-dismiss="modal"
+                            id="chargeButton" type="button" onclick="return confirm('정말 충전하시겠습니까?');">충전하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

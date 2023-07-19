@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="fragment-sidebar-user">
+
+    <div class="side_menu" style="overflow-y: auto; height: calc(100vh - 100px); z-index: 1;">
+        <ul>
+            <li><a th:href="@{/users/item}">전체</a></li>
+            <li th:each="category : ${categoryList}">
+                <a href="#" th:text="${category.categoryParentName}"
+                   th:attr="data-categoryId=${category.categoryParentId}"
+                   th:href="@{/api/items/categories/{categoryId}/user(categoryId=${category.categoryParentId})}"></a>
+                <ul>
+                    <li th:each="childCategory : ${category.categoryChildDtoList}">
+                        <a href="#" th:text="${childCategory.categoryChildName}"
+                           th:attr="data-categoryId=${childCategory.categoryChildId}"
+                           th:href="@{/api/items/categories/{categoryId}/user(categoryId=${childCategory.categoryChildId})}"></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+
+
+</div>
+
+</html>

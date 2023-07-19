@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+</head>
+<body>
+<!-- Navigation -->
+<div th:replace="template/fragment/nav-admin.html :: fragment-nav-admin"></div>
+<div class="row">
+    <div class="col-2">
+        <h2 class="m-lg-2">배너 셋팅</h2>
+    </div>
+    <div class="col-4">
+        <br/>
+        <p>현재 배너 미리보기</p>
+        <div id="carouselExampleIndicators" class="carousel slide d-flex justify-content-center align-items-center mb-3"
+             data-bs-ride="carousel">
+            <div class="carousel-indicators carousel-dark">
+                <button th:each="banner, bannerStat : ${bannerList}" type="button"
+                        data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${bannerStat.index}"
+                        th:classappend="${bannerStat.index == 0 ? 'active' : ''}"
+                        th:attr="aria-current=${bannerStat.index == 0 ? 'true' : 'false'}, aria-label='Slide ' + ${bannerStat.index + 1}"></button>
+            </div>
+            <div class="carousel-inner">
+                <div th:each="banner, bannerStat : ${bannerList}"
+                     th:classappend="${bannerStat.index == 0 ? 'carousel-item active' : 'carousel-item'}">
+                    <img th:src="${banner.saveFolderPath}" class="d-block w-70 img-fluid mx-auto" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <p class="mb-3"> 현재 적용된 배너 리스트</p>
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#배너 Id</th>
+                <th scope="col">사진 미리보기</th>
+                <th scope="col">아이템 id</th>
+                <th scope="col">아이템 카테고리</th>
+                <th scope="col">아이템 이름</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="banner : ${bannerList}">
+                <td th:text="${banner.id}"></td>
+                <td>
+                    <img th:src="${banner.saveFolderPath}" style="max-height: 200px; max-width: 300px;">
+                </td>
+                <td th:text="${banner.itemId}"></td>
+                <td th:text="${banner.itemCategoryName}"></td>
+                <td th:text="${banner.itemName}"></td>
+                <td>
+                    <form th:action="@{/api/banners/{bannerId}(bannerId=${banner.id})}" th:method="delete">
+                        <button type="submit" class="btn btn-primary">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${bannerList == null}">
+                <td colspan="6">아직 배너에 등록된게 없네요!</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-4">
+        <br/>
+        <p>배너 이미지 등록하기 - 꼭 아이템 선택을 하지 않아도 등록됩니다.</p>
+        <form id="bannerForm" enctype="multipart/form-data" class="d-flex">
+            <div class="input-group mb-3 col">
+                <input type="file" class="custom-file-input" id="bannerImgFile" name="bannerImgFile">
+                <!--                <label class="custom-file-label" for="bannerImgFile"></label>-->
+            </div>
+            <div class="banner_form col">
+                <button class="btn btn-danger" type="submit">배너 추가하기</button>
+            </div>
+        </form>
+
+
+        <div class="item-search">
+            <form id="itemSearchForm">
+                <input type="text" name="keyword" id="keywordInput" placeholder="아이템 검색"/>
+                <button type="submit" class="btn btn-dark">검색</button>
+            </form>
+        </div>
+        <table id="itemSearchResultsTable" class="table table-striped table-hover table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#Item Id</th>
+                <th scope="col">아이템 이름</th>
+                <th scope="col">대분류</th>
+                <th scope="col">중분류</th>
+                <th scope="col">아이템 가격</th>
+                <th scope="col">선택</th>
+            </tr>
+            </thead>
+            <tbody id="itemSearchResultsTableBody"></tbody>
+        </table>
+
+    </div>
+    <div class="col-2"></div>
+
+</div>
+<script th:inline="javascript">
+
+    $(document).ready(function () {
+        var errorMessage = [[${errorMessage}]];
+        if (errorMessage != null) {
+            alert(errorMessage);
+        }
+
+        bindDomEvent();
+
+    });
+
+    $(document).ready(function () {
+
+
+        var selectedItems = []; // 선택된 아이템을 저장하는 배열
+
+        // 체크박스 변경 이벤트 처리
+        $(document).on("change", 'input[name="selectedItem"]', function () {
+            var isChecked = $(this).prop("checked");
+
+            // 다른 체크박스의 선택 상태를 해제
+            $('input[name="selectedItem"]').not(this).prop("checked", false);
+
+            if (isChecked) {
+                // 선택된 아이템 배열에 추가
+                var itemId = $(this).val();
+                selectedItems = [itemId];
+            } else {
+                // 선택된 아이템 배열 초기화
+                selectedItems = [];
+            }
+        });
+
+        $("#bannerForm").submit(function (event) {
+            event.preventDefault(); // 폼 제출 기본 동작 방지
+
+            var formData = new FormData(); // 새로운 FormData 객체 생성
+            var bannerImgFile = $("#bannerImgFile")[0].files[0]; // 선택된 이미지 파일 가져오기
+            var selectedItemId = selectedItems.length > 0 ? selectedItems[0] : ""; // 첫 번째 선택된 아이템 ID 가져오기
+
+            formData.append("bannerImgFile", bannerImgFile); // 이미지 파일 추가
+            formData.append("itemId", selectedItemId); // 선택된 아이템 ID 추가
+
+            // Ajax 요청
+            $.ajax({
+                url: "/api/banners",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // 등록 완료 후 처리하는 로직 작성
+                    console.log(response);
+                    window.location.href = "/admin/main/banners"
+                },
+                error: function () {
+                    console.log("배너 등록 요청 실패");
+                }
+            });
+        });
+
+        // 아이템 검색 폼 제출 이벤트 처리
+        $("#itemSearchForm").submit(function (event) {
+            event.preventDefault(); // 폼 제출 기본 동작 방지
+
+            var keyword = $("#keywordInput").val(); // 검색어 가져오기
+
+            // Ajax 요청
+            $.ajax({
+                url: "/api/banners/items/search", // 아이템 검색 API 엔드포인트
+                type: "GET",
+                data: {
+                    keyword: keyword
+                },
+                success: function (response) {
+                    // 검색 결과를 처리하는 로직 작성
+                    displaySearchResults(response);
+                    console.log(response);
+                },
+                error: function () {
+                    console.log("검색 요청 실패");
+                }
+            });
+        });
+
+        // 검색 결과를 표시하는 함수
+        function displaySearchResults(results) {
+            var tableBody = $("#itemSearchResultsTableBody");
+            tableBody.empty(); // 결과를 비우고 새로운 결과로 업데이트
+
+            // 결과를 순회하며 행을 생성하여 테이블에 추가
+            $.each(results, function (index, item) {
+                var row = $("<tr>");
+
+                // Item Id
+                var itemIdCell = $("<td>").text(item.itemId);
+                row.append(itemIdCell);
+
+                // 아이템 이름
+                var itemNameCell = $("<td>").text(item.itemName);
+                row.append(itemNameCell);
+
+                // 대분류
+                var firstCategoryCell = $("<td>").text(item.firstCategoryName);
+                row.append(firstCategoryCell);
+
+                // 중분류
+                var secondCategoryCell = $("<td>").text(item.secondCategoryName);
+                row.append(secondCategoryCell);
+
+                // 아이템 가격
+                var itemPriceCell = $("<td>").text(item.itemPrice);
+                row.append(itemPriceCell);
+
+                // 체크박스
+                var checkboxCell = $("<td>");
+                var checkbox = $("<input>")
+                    .attr("type", "checkbox")
+                    .attr("name", "selectedItem")
+                    .attr("value", item.itemId);
+                checkboxCell.append(checkbox);
+                row.append(checkboxCell);
+
+                tableBody.append(row);
+            });
+        }
+    });
+
+    function bindDomEvent() {
+
+        console.log("bindDomEvent 호출 완료.")
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();  //이미지 파일명
+            var fileExt = fileName.substring(fileName.lastIndexOf(".") + 1); // 확장자 추출
+            fileExt = fileExt.toLowerCase(); //소문자 변환
+
+            if (fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif" && fileExt != "png" && fileExt != "bmp") {
+                alert("이미지 파일만 등록이 가능합니다.");
+                return;
+            }
+
+            $(this).siblings(".custom-file-label").html(fileName);
+        });
+    }
+</script>
+</body>
+</html>
