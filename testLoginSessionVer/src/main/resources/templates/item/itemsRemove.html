@@ -1,0 +1,37 @@
+<div class="row" th:fragment="itemRemoveList" xmlns:th="http://www.thymeleaf.org">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div th:each="item, stat : ${itemList}">
+            <div class="col">
+                <div class="card" style="width: 100%;">
+                    <div class="d-flex align-items-center justify-content-center"
+                         style="height: 6rem; justify-content: center; align-content: center;">
+                        <img th:if="${item.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}"
+                             style="width:80%; height: 80%;">
+                        <img th:unless="${item.itemImgDto == null}" th:src="${item.itemImgDto.saveFolderPath}"
+                             style="width:80%; height: 80%;">
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/api/items/{itemId}/admin/remove(itemId=${item.itemId})}">
+                            <span class="card-title-full" th:text="${item.getItemName()}"></span>
+                            <span class="card-title-truncated"></span>
+
+                        </a>
+                        <p class="card-text" th:text="${item.getItemPrice()} + ' 원'">item price</p>
+                        <input type="hidden" class="item-id" th:value="${item.getItemId()}"/>
+
+                    </div>
+<!--                    <div class="row">-->
+<!--                        <div class="col">-->
+<!--                            <div class="card-body d-flex justify-content-center align-items-center">-->
+<!--                                <form th:action="@{/api/items/{itemId}/remove(itemId=${item.getItemId()})}" th:method="delete"-->
+<!--                                      onsubmit="return confirm('정말 DB에서 삭제하시겠습니까?');">-->
+<!--                                    <button type="submit" class="btn btn-danger">삭제</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+    <style>
+        #cart-background {
+            background: #f5f5f5;
+            overflow: hidden; /* 테이블 영역을 넘어가는 부분을 숨김 */
+        }
+
+        #cart-body {
+            overflow-y: auto;
+            height: 500px; /* 세로 스크롤을 적용할 높이 설정 */
+        }
+
+        #cart-body table {
+            margin-bottom: 0; /* 테이블 아래의 공간 제거 */
+        }
+
+        #cart-body thead {
+            position: sticky;
+            top: 0;
+            background-color: #fff; /* 고정된 thead의 배경색 설정 */
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<div th:replace="template/fragment/nav-user.html :: fragment-nav-user"></div>
+<br/>
+<div class="row">
+    <div class="col-3">
+        <h2 class="m-lg-2">
+            장바구니
+        </h2>
+    </div>
+    <div class="col-6">
+        <div class="row" id="cart-background">
+            <div class="mb-3 mt-3" style="text-align: center;">
+                <h2>장바구니</h2>
+            </div>
+            <div id="cart-body" style="margin-bottom: 10px">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="checkall" onclick="checkAll()"> 전체선택
+                        </td>
+                        <th scope="col">아이템 정보</th>
+                        <th scope="col">가격 정보</th>
+                        <th scope="col">상품 가격</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cartItem : ${cartItemList}">
+                        <td class="text-center align-middle">
+                            <input type="checkbox" name="cartChkBox" th:value="${cartItem.cartItemId}">
+                        </td>
+                        <td>
+
+                            <img th:if="${cartItem.itemImgDto == null}" th:src="@{/img/defaultItemImg.png}" style="width:80%; height: 80%; max-width: 150px;">
+                            <img th:unless="${cartItem.itemImgDto == null}" th:src="${cartItem.itemImgDto.saveFolderPath}" style="width:80%; height: 80%; max-width: 150px;">
+                            <span th:text="${cartItem.itemName}"></span>
+                        </td>
+                        <td>
+                            <div>
+                                <span class="input-group mt-2">
+                                    <span th:id="'price_' + ${cartItem.cartItemId}"
+                                          th:data-price="${cartItem.itemPrice}">
+                                        <img th:src="@{/img/coin.png}" width="15px" height="15px" alt="">
+                                    <span th:text="${cartItem.itemPrice} + '원' " class="align-self-center mr-2"></span>
+                                    </span>
+                                    <input type="number" name="count" th:id="'count_' + ${cartItem.cartItemId}"
+                                           th:value="${cartItem.count}" min="1" max="10"
+                                           onchange="changeCount(this)" class="form-control mr-2">
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <span th:id="'totalPrice_' + ${cartItem.cartItemId}"
+                                  name="totalPrice" th:text="${cartItem.itemPrice * cartItem.count} + '원'">
+                            </span>
+                        </td>
+                        <td style="vertical-align: middle">
+                            <button type="button" class="close" aria-label="Close">
+                                        <span aria-hidden="true" th:data-id="${cartItem.cartItemId}"
+                                              onclick="deleteCartItem(this)">&times;</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${cartItemList.size() == 0}" style="text-align: center">
+                        <td colspan="5">아직 장바구니에 담긴 상품이 없어요!</td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="row">
+                <div class="col pay_area">
+                    <ul>
+                        <li>- 상품은 7일간 보관되며 가장 오래된 상품부터 삭제됩니다.</li>
+                        <li>- 상품의 갱신 기준은 0시를 기준으로 합니다.</li>
+                        <li>- 쿠폰은 하나의 아이템에만 사용이 가능합니다.<br>(복수 수량에는 적용 불가)</li>
+                    </ul>
+                </div>
+                <div class="col" style="text-align: right">
+                    <div class="row">
+                        <h2 class="text-center">
+                            총 주문 금액 : <span id="orderTotalPrice" class="text-danger">0원</span>
+                        </h2>
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="orders()">구매하기</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+</body>
+<script th:inline="javascript">
+
+    $(document).ready(function () {
+        $("input[name=cartChkBox]").change(function () {
+            getOrderTotalPrice();
+        });
+    });
+
+    function getOrderTotalPrice() {
+        var orderTotalPrice = 0;
+        $("input[name=cartChkBox]:checked").each(function () {
+            var cartItemId = $(this).val();
+            var price = $("#price_" + cartItemId).attr("data-price");
+            var count = $("#count_" + cartItemId).val();
+            orderTotalPrice += price * count;
+        });
+
+        $("#orderTotalPrice").html(orderTotalPrice + '원');
+    }
+
+
+    function checkAll() {
+        if ($("#checkall").prop("checked")) {
+            $("input[name=cartChkBox]").prop("checked", true);
+        } else {
+            $("input[name=cartChkBox]").prop("checked", false);
+        }
+        getOrderTotalPrice();
+    }
+
+    function changeCount(obj) {
+        var count = obj.value;
+        var cartItemId = obj.id.split('_')[1];
+        var price = $("#price_" + cartItemId).data("price");
+        var totalPrice = count * price;
+        $("#totalPrice_" + cartItemId).html(totalPrice + "원");
+        getOrderTotalPrice();
+        updateCartItemCount(cartItemId, count);
+    }
+
+
+    //장바구니 상품 갯수 수정하기
+    function updateCartItemCount(cartItemId, count) {
+        var url = "/api/cart/" + cartItemId + "?count=" + count;
+
+        $.ajax({
+            url: url,
+            type: "PATCH",
+            dataType: "json",
+            cache: false,
+            success: function (result, status) {
+                console.log("cartItem count update success");
+            },
+        });
+    }
+
+    function deleteCartItem(obj) {
+        var cartItemId = obj.dataset.id;
+
+        var url = "/api/cart/" + cartItemId;
+
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            dataType: "json",
+            cache: false,
+            success: function (result, status) {
+                location.href = '/users/cart';
+            },
+        });
+    }
+
+    function orders() {
+
+        var url = "/api/cart/orders";
+
+        var dataList = new Array();
+        var paramData = new Object();
+
+        $("input[name=cartChkBox]:checked").each(function () {
+            var cartItemId = $(this).val();
+            var data = new Object();
+            data["cartItemId"] = cartItemId;
+            dataList.push(data);
+        });
+
+        paramData['cartOrderDtoList'] = dataList;
+
+        var param = JSON.stringify(paramData);
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            data: param,
+
+            dataType: "json",
+            cache: false,
+            success: function (result, status) {
+                alert("주문이 완료 되었습니다.");
+                location.href = '/users/history/purchase';
+            },
+        });
+    }
+</script>
+</html>
