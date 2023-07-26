@@ -2,6 +2,7 @@ package com.estgames.web.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estgames.common.annotation.CurrentUser;
@@ -114,9 +117,10 @@ public class CategoryApiController {
 	@LoginCheck
 	@ValidAdmin
 	@DeleteMapping
-	public String removeCategory(@CurrentUser User loginUser, @ModelAttribute CategoryModifyRequestDto requestDto,
+	public @ResponseBody ResponseEntity removeCategory(@CurrentUser User loginUser, @RequestBody CategoryModifyRequestDto requestDto,
 		Model model) {
 
+		log.error("카테고리 삭제 " + requestDto.getCategoryId());
 		categoryService.removeCategory(requestDto.getCategoryId());
 
 		//카테고리 리스트 호출 대분류 중분류(셀렉트 박스를 위해)
@@ -130,6 +134,7 @@ public class CategoryApiController {
 		CategoryModifyRequestDto categoryModifyRequestDto = new CategoryModifyRequestDto();
 		model.addAttribute("categoryModifyRequestDto", categoryModifyRequestDto);
 
-		return "admin/categorySetting";
+		// return "admin/categorySetting";
+		return ResponseEntity.ok(categoryList);
 	}
 }

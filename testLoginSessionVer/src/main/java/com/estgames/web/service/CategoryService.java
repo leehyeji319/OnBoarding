@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.estgames.common.exception.ExceptionFactory;
 import com.estgames.db.entiity.Item;
 import com.estgames.db.repsitory.CategoryRepositoryImpl;
 import com.estgames.web.dto.category.CategoryModifyRequestDto;
@@ -17,7 +18,9 @@ import com.estgames.db.entiity.Category;
 import com.estgames.db.repsitory.CategoryRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -145,7 +148,7 @@ public class CategoryService {
 	public long removeCategory(long categoryId) {
 		Category category = validateCategoryExistByCategoryId(categoryId);
 		if (category.getParent() == null && category.getChild().size() > 0) {
-			throw new IllegalArgumentException("해당 대분류 하위에 있는 중분류 카테고리가 존재하지 않아야합니다.");
+			throw ExceptionFactory.invalidDeleteParentCategory();
 		} else if (category.getParent() == null && category.getChild().size() == 0) {
 			categoryRepository.deleteById(categoryId);
 
@@ -156,14 +159,15 @@ public class CategoryService {
 		int removeItemCountAtCategory = 0;
 
 		for (Item item : itemList) {
-			if (item.isRemove() == true) {
+			if (item.isRemove()) {
 				removeItemCountAtCategory ++;
 			}
 		}
 
-		if (category.getItemList().size() > 0 && category.getItemList().size() != removeItemCountAtCategory) {
-			throw new IllegalArgumentException("해당 카테고리에 아이템이 존재해서는 안됩니다.");
-		} else if (category.getItemList().size() > 0 && category.getItemList().size() == removeItemCountAtCategory) {
+		if (category.getParent() != null && category.getItemList().size() != removeItemCountAtCategory) {
+			// throw new IllegalArgumentException("해당 카테고리에 아이템이 존재해서는 안됩니다.");
+			throw ExceptionFactory.invalidDeleteChildCategory();
+		} else if (category.getParent() != null && category.getItemList().size() == removeItemCountAtCategory) {
 			//만약 카테고리 내에 아이템이 존재하지만, 모두 삭제된 아이템이라면
 			//1.먼저 삭제된 아이템의 카테고리를 지운다.
 			for (Item item : itemList) {
@@ -171,6 +175,8 @@ public class CategoryService {
 			}
 
 			//2. 카테고리를 삭제한다.
+			log.error("(category.getItemList().size() > 0 && category.getItemList().size() == removeItemCountAtCategory");
+			log.error("::::::::::::::::::");
 			categoryRepository.deleteById(categoryId);
 		}
 

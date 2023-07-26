@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.estgames.common.exception.CustomException;
+import com.estgames.common.exception.ExceptionFactory;
 import com.estgames.db.entiity.ItemFileInfo;
 import com.estgames.db.entiity.OrderItem;
 import com.estgames.db.repsitory.ItemFileInfoRepository;
@@ -98,7 +101,8 @@ public class CartService {
 		Optional<CartItem> findCartItem = cartItemRepository.findByUserIdAndItemId(userId, itemId);
 
 		if (findCartItem.isPresent()) {
-			throw new IllegalArgumentException("이미 장바구니에 추가된 상품입니다.");
+			// throw new IllegalArgumentException("이미 장바구니에 추가된 상품입니다.");
+			throw ExceptionFactory.duplicateItemUserCart();
 		}
 
 		User findUser = validateExistUserById(userId);
@@ -214,18 +218,18 @@ public class CartService {
 		int totalPrice = 0;
 		for (CartOrderDto cartOrderDto : cartOrderDtoList) {
 			CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).orElseThrow(
-				() -> new IllegalArgumentException("해당 id로 조회한 cart item이 존재하지 않습니다.")
+				() -> new CustomException(HttpStatus.NOT_FOUND, "해당 id로 조회한 cart item이 존재하지 않습니다.")
 			);
 			totalPrice += cartItem.getItem().getPrice() * cartItem.getCount();
 		}
 
 		if (totalPrice > user.getCash()) {
-			throw new IllegalArgumentException("주문 금액이 유저의 보유 금액보다 큽니다.");
+			throw ExceptionFactory.userCashLessThanForPurchase();
 		}
 
 		for (CartOrderDto cartOrderDto : cartOrderDtoList) {
 			CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).orElseThrow(
-				() -> new IllegalArgumentException("해당 id로 조회한 cart item이 존재하지 않습니다.")
+				() -> new CustomException(HttpStatus.NOT_FOUND, "해당 id로 조회한 cart item이 존재하지 않습니다.")
 			);
 
 			Item item = cartItem.getItem();

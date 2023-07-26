@@ -41,7 +41,7 @@ public class Item implements Serializable {
 	@Column(name = "item_id", nullable = false, updatable = false)
 	private long id;
 
-	@Column(name = "item_name", nullable = false, length = 20)
+	@Column(name = "item_name", nullable = false, length = 500)
 	private String itemName;
 
 	@Column(name = "item_price", nullable = false)
@@ -50,7 +50,7 @@ public class Item implements Serializable {
 	@Column(name = "item_description", nullable = false, length = 1500)
 	private String description;
 
-	@Column(name = "item_img_url", length = 30)
+	@Column(name = "item_img_url", length = 500)
 	private String itemImgUrl;
 
 	//메인 아이템인지 여부
@@ -63,7 +63,7 @@ public class Item implements Serializable {
 	private Integer mainPriorityNumber;
 
 	//메인 아이템일 시, 종인지 횡인지 구분하기
-	@Column(name = "main_item_location", length = 10)
+	@Column(name = "main_item_location", length = 20)
 	private String mainItemLocation;
 
 	@Column(name = "is_remove")

@@ -83,15 +83,26 @@
                                                         <button th:if="${!item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에 추가되었습니다.')"><img th:src="@{/img/empty-heart.png}" width="20px" height="20px" alt=""></button>
                                                     </form>
                                                 </div>
+<!--                                                <div class="col">-->
+<!--                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>-->
+<!--                                                    </form>-->
+<!--                                                </div>-->
                                                 <div class="col">
-                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartItem(this)">
+                                                        <img th:src="@{/img/cart.png}" width="20px" height="20px" alt="">
+                                                    </button>
                                                 </div>
+<!--                                                <div class="col">-->
+<!--                                                    <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>-->
+<!--                                                    </form>-->
+<!--                                                </div>-->
                                                 <div class="col">
-                                                    <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
-                                                    </form>
+                                                    <button type="submit" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartToOrder(this)">
+                                                        <img th:src="@{/img/pay.png}" width="20px" height="20px" alt="">
+                                                    </button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -144,15 +155,21 @@
                                                         <button th:if="${!item.isStar()}" type="submit" class="btn btn-link btn-sm" onclick="showAlert('즐겨찾기에 추가되었습니다.')"><img th:src="@{/img/empty-heart.png}" width="20px" height="20px" alt=""></button>
                                                     </form>
                                                 </div>
+<!--                                                <div class="col">-->
+<!--                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>-->
+<!--                                                    </form>-->
+<!--                                                </div>-->
                                                 <div class="col">
-                                                    <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}" width="20px" height="20px" alt=""></button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartItem(this)">
+                                                        <img th:src="@{/img/cart.png}" width="20px" height="20px" alt="">
+                                                    </button>
                                                 </div>
                                                 <div class="col">
-                                                    <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                                        <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
-                                                    </form>
+                                                    <button type="submit" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartToOrder(this)">
+                                                        <img th:src="@{/img/pay.png}" width="20px" height="20px" alt="">
+                                                    </button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -169,36 +186,98 @@
 
     </div>
     <div class="col-3"></div>
+    <th:block>
+        <script th:inline="javascript">
+            function showAlert(message) {
+                alert(message);
+            }
+
+            //제목이 길면 짤라주는 코드
+            /*<![CDATA[*/
+            var cardTitlesFull = document.querySelectorAll(".card-title-full");
+            var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
+            var maxLength = 7; // 제목의 최대 길이 설정
+
+            Array.from(cardTitlesFull).forEach(function(titleFull, index) {
+                var titleTruncated = cardTitlesTruncated[index];
+
+                if (titleFull.textContent.length > maxLength) {
+                    titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
+                    titleFull.style.display = "none";
+                    titleTruncated.style.display = "inline";
+                } else {
+                    titleFull.style.display = "inline";
+                    titleTruncated.style.display = "none";
+                }
+            });
+            /*]]>*/
+
+            function addCartItem(obj) {
+                // var itemId = obj.dataset.id;
+                // var itemId = obj.getAttribute('data-id');
+                var itemId = obj.getAttribute('data-id');
+
+
+                console.log(itemId)
+                var url = '/api/cart/items/' + itemId;
+
+                console.log('잘 들어왔어요!! ' + itemId);
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function (result, status) {
+                        console.log("cartItem count update success");
+                        alert("장바구니에 추가되었습니다. itemId: " + itemId + '성공!!!');
+                        location.href = '/';
+                    },
+                    error: function (xhr, result, status) {
+                        console.log("cartItem count update failed");
+                        alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
+                        location.href = '/';
+                    }
+                });
+
+            }
+
+            function addCartToOrder(obj) {
+                // var itemId = obj.dataset.id;
+                // var itemId = obj.getAttribute('data-id');
+                var itemId = obj.getAttribute('data-id');
+
+
+                console.log(itemId)
+                var url = '/api/cart/items/' + itemId;
+
+                console.log('잘 들어왔어요!! ' + itemId);
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function (result, status) {
+                        console.log("cartItem count update success");
+                        alert('구매 주문을 위해 장바구니로 이동합니다.');
+                        location.href = '/users/cart';
+                    },
+                    error: function (xhr, result, status) {
+                        console.log("cartItem count update failed");
+                        alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
+                        location.href = '/users/cart';
+                    }
+                });
+
+            }
+        </script>
+
+    </th:block>
 
 
 </div>
 
-<script th:inline="javascript">
-    function showAlert(message) {
-        alert(message);
-    }
-
-    //제목이 길면 짤라주는 코드
-    /*<![CDATA[*/
-    var cardTitlesFull = document.querySelectorAll(".card-title-full");
-    var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
-    var maxLength = 7; // 제목의 최대 길이 설정
-
-    Array.from(cardTitlesFull).forEach(function(titleFull, index) {
-        var titleTruncated = cardTitlesTruncated[index];
-
-        if (titleFull.textContent.length > maxLength) {
-            titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
-            titleFull.style.display = "none";
-            titleTruncated.style.display = "inline";
-        } else {
-            titleFull.style.display = "inline";
-            titleTruncated.style.display = "none";
-        }
-    });
-    /*]]>*/
-
-</script>
 
 </body>
 </html>

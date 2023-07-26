@@ -39,7 +39,7 @@ public class Category implements Serializable {
 	@Column(name = "category_id", nullable = false, updatable = false)
 	private long id;
 
-	@Column(name = "category_name", nullable = false, length = 20)
+	@Column(name = "category_name", nullable = false, length = 100)
 	private String categoryName;
 
 	@OneToMany(mappedBy = "category")

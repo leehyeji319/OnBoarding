@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "cart_item")
+@Table(name = "cart_item", uniqueConstraints = @UniqueConstraint(columnNames = {"item_id", "cart_id"}))
 @Getter
 @Builder(toBuilder = true)
 public class CartItem implements Serializable {

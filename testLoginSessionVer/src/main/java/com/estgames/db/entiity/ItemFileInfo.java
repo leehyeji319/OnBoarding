@@ -38,13 +38,13 @@ public class ItemFileInfo extends BaseEntity implements Serializable {
 	@Column(name = "item_file_info_id", nullable = false, updatable = false)
 	private long id;
 
-	@Column(name = "save_folder_path", nullable = false)
+	@Column(name = "save_folder_path", nullable = false, length = 1000)
 	private String saveFolderPath;
 
-	@Column(name = "original_file", nullable = false)
+	@Column(name = "original_file", nullable = false, length = 500)
 	private String originalFile;
 
-	@Column(name = "save_file", nullable = false)
+	@Column(name = "save_file", nullable = false, length = 500)
 	private String saveFile;
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -31,13 +31,13 @@ public class BannerFileInfo extends BaseEntity implements Serializable {
 	@Column(name = "item_id")
 	private Long itemId;
 
-	@Column(name = "save_folder_path", nullable = false)
+	@Column(name = "save_folder_path", nullable = false, length = 1000)
 	private String saveFolderPath;
 
-	@Column(name = "original_file", nullable = false)
+	@Column(name = "original_file", nullable = false, length = 500)
 	private String originalFile;
 
-	@Column(name = "save_file", nullable = false)
+	@Column(name = "save_file", nullable = false, length = 500)
 	private String saveFile;
 
 	public void updateBannerFileInfo(String originalFile, String saveFile, String saveFolderPath) {

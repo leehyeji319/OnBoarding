@@ -47,7 +47,7 @@ public class OrderItem extends BaseEntity implements Serializable {
 	@Column(name = "order_after_cash", nullable = false)
 	private int orderAfterCash;
 
-	@Column(name = "order_item_name", nullable = false, length = 20)
+	@Column(name = "order_item_name", nullable = false, length = 500)
 	private String orderItemName;
 
 	@ManyToOne(fetch = FetchType.LAZY)

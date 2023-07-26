@@ -54,7 +54,6 @@
             <!--            사이드 메뉴-->
             <div class="side_menu">
                 <ul>
-                    <li><a th:href="@{/admin/categories}">전체</a></li>
                     <li th:each="category : ${categoryList}">
                         <a href="#" th:text="${category.categoryParentName}"
                            th:attr="data-categoryId=${category.categoryParentId}"
@@ -69,8 +68,92 @@
                     </li>
                 </ul>
             </div>
+            <!--            <div th:insert="template/fragment/sidebar-test.html :: fragment-sidebar-test"></div>-->
         </div>
-        <div class="col-10" style="text-align: center">
+        <div class="col-7">
+            <br/>
+            <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal"
+                    data-bs-target="#removeItemCategory">선택한 아이템 이동하기
+            </button>
+            <div id="items" class="mb-3">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="checkall" onclick="checkAll()"> 전체선택
+                        </td>
+                        <th scope="col">#Item Id</th>
+                        <th scope="col">대분류</th>
+                        <th scope="col">중분류</th>
+                        <th scope="col">아이템 이름</th>
+                        <th scope="col">아이템 가격</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, stat : ${itemList}" th:onclick="">
+                        <td class="text-center align-middle">
+                            <input type="checkbox" name="itemChkBox" th:value="${item.itemId}">
+                        </td>
+                        <td th:text="${item.itemId}"></td>
+                        <td th:text="${item.firstCategoryName}"></td>
+                        <td th:text="${item.secondCategoryName}"></td>
+                        <td th:text="${item.itemName}"></td>
+                        <td th:text="${item.itemPrice}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4"></div>
+                <div class="row">
+
+                    <div class="modal fade" id="removeItemCategory" tabindex="-1"
+                         aria-labelledby="removeItemCategoryLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="removeItemCategoryLabel">아이템을 이동시킬 카테고리 이동</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <select id="removeItemCategoryParentId"
+                                                    class="form-select mb-3"
+                                                    aria-label="Default select example"
+                                                    onchange="updateCategoryChildSelectMoveItem()">
+                                                <option selected disabled>대분류 선택</option>
+                                                <option th:each="category : ${categoryList}"
+                                                        th:value="${category.categoryParentId}"
+                                                        th:text="${category.categoryParentName}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select id="removeItemCategoryChildId"
+                                                    class="form-select mb-3"
+                                                    aria-label="Default select example">
+                                                <option selected disabled value="">중분류 선택</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="moveItemAnotherChildCategory()">이동하기</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+
+        </div>
+        <div class="col-3" style="text-align: center">
             <br/>
             <!--                카테고리 생성 부분-->
             <div>
@@ -80,7 +163,7 @@
 
                     <div class="col-4"></div>
 
-                    <div class="col-4" th:object="${categorySaveRequestDto}">
+                    <div class="row" th:object="${categorySaveRequestDto}">
                         <!-- 대분류 생성 모달 -->
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal"
@@ -185,7 +268,7 @@
                 <div class="row mb-3">
 
                     <div class="col-4"></div>
-                    <div class="col-4">
+                    <div class="row">
                         <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal"
                                 data-bs-target="#categoryParentModify"> 대분류 카테고리 수정
                         </button>
@@ -297,7 +380,7 @@
 
                 <div class="row mb-3">
                     <div class="col-4"></div>
-                    <div class="col-4">
+                    <div class="row">
                         <button class="btn btn-lg btn-secondary" data-bs-toggle="modal"
                                 data-bs-target="#categoryChildMove"> 중분류 카테고리 이동
                         </button>
@@ -364,49 +447,69 @@
                 <p class="lead"> 카테고리 삭제 기능</p>
                 <div class="row mb-3">
                     <div class="col-4"></div>
-                    <div class="col-4">
+                    <div class="row">
                         <button class="btn btn-lg btn-secondary" data-bs-toggle="modal"
                                 data-bs-target="#categoryParentRemove"> 대분류 카테고리 삭제
                         </button>
                         <button class="btn btn-lg btn-secondary" data-bs-toggle="modal"
                                 data-bs-target="#categoryChildRemove"> 중분류 카테고리 삭제
                         </button>
-                        <form th:action="@{/api/categories}" th:method="delete" th:object="${categoryModifyRequestDto}">
-                            <div class="modal fade" id="categoryParentRemove" tabindex="-1"
-                                 aria-labelledby="categoryParentRemoveLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="categoryParentRemoveLabel">중분류 카테고리 삭제</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!--                                            수정할 대분류 select box-->
-                                            <div>
+                        <!--                        <form th:object="${categoryModifyRequestDto}">-->
+                        <div th:object="${categoryModifyRequestDto}" class="modal fade" id="categoryParentRemove"
+                             tabindex="-1"
+                             aria-labelledby="categoryParentRemoveLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="categoryParentRemoveLabel">중분류 카테고리 삭제</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!--                                            수정할 대분류 select box-->
+                                        <div>
 
-                                                <select id="categoryParentSelectRemove" class="form-select mb-3"
-                                                        aria-label="Default select example" th:field="*{categoryId}">
-                                                    <option selected disabled value="">대분류 선택</option>
-                                                    <option th:each="category : ${categoryList}"
-                                                            th:value="${category.categoryParentId}"
-                                                            th:text="${category.categoryParentName}"></option>
-                                                </select>
-                                            </div>
+                                            <select id="categoryParentSelectRemove" class="form-select mb-3"
+                                                    aria-label="Default select example" th:field="*{categoryId}">
+                                                <option selected disabled value="">대분류 선택</option>
+                                                <option th:each="category : ${categoryList}"
+                                                        th:id="'category_' + ${category.categoryParentId}"
+                                                        th:data-categoryId="${category.categoryParentId}"
+                                                        th:value="${category.categoryParentId}"
+                                                        th:text="${category.categoryParentName}">
+                                                </option>
+                                            </select>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Close
-                                            </button>
-                                            <button type="submit" class="btn btn-primary">대분류 삭제</button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <!--                                            <button type="submit" class="btn btn-primary" th:data-id="${categoryModifyRequestDto.categoryId}" onclick="deleteParentCategory(this)">대분류 삭제</button>-->
+                                        <button type="submit" class="btn btn-primary" onclick="deleteParentCategory()">
+                                            대분류 삭제
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                        <form th:action="@{/api/categories}" th:method="delete" th:object="${categoryModifyRequestDto}">
+                        </div>
+                        <!--                        </form>-->
+                        <!-- 모달창 -->
+                        <div id="parentCategoryOptionModal" class="modal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <p id="parentCategoryOptionModalMessage">에러 발생</p>
+                                </div>
+                            </div>
 
-                        <div class="modal fade" id="categoryChildRemove" tabindex="-1"
+                        </div>
+
+
+                        <!--                        <form th:action="@{/api/categories}" th:method="delete" th:object="${categoryModifyRequestDto}">-->
+
+                        <div th:object="${categoryModifyRequestDto}" class="modal fade" id="categoryChildRemove"
+                             tabindex="-1"
                              aria-labelledby="categoryChildRemoveLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -429,6 +532,7 @@
                                         <div>
                                             <select id="categoryChildSelectRemove" th:field="*{categoryId}"
                                                     class="form-select mb-3" aria-label="Default select example">
+
                                                 <option selected disabled value="">중분류 선택</option>
                                             </select>
                                         </div>
@@ -436,14 +540,17 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
                                         </button>
-                                        <button type="submit" class="btn btn-primary">중분류 삭제</button>
+                                        <button type="submit" class="btn btn-primary" onclick="deleteChildCategory()">
+                                            중분류 삭제
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </form>
+                        <!--                        </form>-->
                     </div>
 
                     <div class="col-4"></div>
@@ -456,11 +563,52 @@
 <th:block>
     <script th:inline="javascript">
         //side menu
+        // $(document).ready(function () {
+        //     $('.side_menu ul li a').click(function () {
+        //         var categoryId = $(this).data('categoryId');
+        //         $(this).siblings('ul').slideToggle();
+        //     });
+        //     loadItems(categoryId);
+        // });
         $(document).ready(function () {
             $('.side_menu ul li a').click(function () {
+                var categoryId = $(this).data('categoryId');
                 $(this).siblings('ul').slideToggle();
+                loadItems(categoryId);
             });
         });
+
+
+        function loadItems(categoryId) {
+            $.ajax({
+                url: '/api/items/categories/' + categoryId + '?type=category',
+                method: 'GET',
+                success: function (response) {
+                    // 응답을 받은 후 페이지 업데이트를 수행하는 로직을 구현합니다.
+                    console.log('Category ID:', categoryId);
+                    // console.log('Response:', response);
+                    // 페이지 업데이트를 위한 코드 작성
+                    // updateItemList(response);
+                },
+                error: function (error) {
+                    // 에러 처리 로직을 구현합니다.
+                    // console.log('Error:', error);
+                }
+            })
+                .done(function (fragment) {
+                    $('#items').replaceWith(fragment);
+                })
+            ;
+        }
+
+        function checkAll() {
+            if ($("#checkall").prop("checked")) {
+                $("input[name=itemChkBox]").prop("checked", true);
+            } else {
+                $("input[name=itemChkBox]").prop("checked", false);
+            }
+            getOrderTotalPrice();
+        }
 
         function validateCategoryParent() {
             var categoryParentName = document.getElementById("categoryParentName").value;
@@ -574,6 +722,37 @@
             }
         }
 
+        //아이템 카테고리 변경
+        function updateCategoryChildSelectMoveItem() {
+            var categoryParentSelect = document.getElementById("removeItemCategoryParentId");
+            var categoryChildSelect = document.getElementById("removeItemCategoryChildId");
+            var categoryListForMove = /*[[${categoryList}]]*/ []; // 대분류와 중분류 데이터를 포함하는 배열
+            // 선택된 대분류의 값 가져오기
+            var selectedCategoryParentId = categoryParentSelect.value;
+            // console.log("선택된 대분류" + selectedCategoryParentId)
+
+            // 중분류 셀렉트 박스 초기화
+            categoryChildSelect.innerHTML = '<option selected disabled value="">중분류 선택</option>';
+
+            // 선택된 대분류에 해당하는 중분류 목록 가져오기
+            var selectedCategory = categoryListForMove.find(function (category) {
+                return category.categoryParentId == selectedCategoryParentId;
+            });
+
+            // console.log("선택된 대분류의 중분류 목록" + selectedCategory)
+
+
+            if (selectedCategory) {
+                // 중분류 목록 추가
+                selectedCategory.categoryChildDtoList.forEach(function (categoryChild) {
+                    var option = document.createElement("option");
+                    option.value = categoryChild.categoryChildId;
+                    option.textContent = categoryChild.categoryChildName;
+                    categoryChildSelect.appendChild(option);
+                });
+            }
+        }
+
         // 대분류 셀렉트 박스의 변경 이벤트에 대한 핸들러 등록
         var categoryParentSelect = document.getElementById("categoryParentSelectMoveForChild");
         categoryParentSelect.addEventListener("change", updateCategoryChildSelectMove);
@@ -623,6 +802,158 @@
 
         // 페이지 로드 시 초기 중분류 목록 설정
         updateCategoryChildSelectRemove();
+
+
+        function deleteParentCategory() {
+            // var categoryId = obj.getAttribute('data-id');
+            // console.log(obj);
+            // console.log(categoryId)
+            var categoryParentSelect = document.getElementById("categoryParentSelectRemove").value;
+
+            var url = '/api/categories/';
+            var categoryModifyRequestDto = new Object();
+            categoryModifyRequestDto["categoryId"] = categoryParentSelect;
+
+            var param = JSON.stringify(categoryModifyRequestDto);
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                contentType: "application/json",
+                data: param,
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    alert("삭제가 완료되었습니다.");
+                    location.href = "/admin/categories";
+                },
+                error: function (xhr) {
+                    console.error("에러 메시지: ", xhr.responseJSON.message);
+                    console.error("에러 발생 시간: ", xhr.responseJSON.timestamp);
+                    console.error("HTTP 상태 코드: ", xhr.status);
+                    alert("에러 메시지: " + xhr.responseJSON.message +
+                        " 하위 카테고리를 먼저 이동해주세요. (카테고리 이동 기능)");
+                    location.href = "/admin/categories";
+                    // $("#categoryParentRemove").css("display", "none");
+                    // var errorMessagePrefix = xhr.responseJSON.message.substr(0, 3);
+                    // // console.error("세 글자만 표시: ", errorMessagePrefix);
+                    // if (errorMessagePrefix === '대분류') {
+                    //     console.log('들어옴1');
+                    //     parentCategoryDeleteOptionChoice(xhr.responseJSON.message);
+                    // }
+                }
+
+            })
+        }
+
+        // function parentCategoryDeleteOptionChoice() {
+        //     console.log('들어옴');
+        // }
+
+        function parentCategoryDeleteOptionChoice(message) {
+
+            $("#categoryParentRemove").css("display", "none");
+
+            $("#parentCategoryOptionModalMessage").text(message);
+            $("#parentCategoryOptionModal").css("display", "block");
+        }
+
+        // 모달창 닫기 버튼 클릭 이벤트 핸들러
+        $(".close").on("click", function () {
+            $("#parentCategoryOptionModal").css("display", "none");
+        });
+
+
+        function deleteChildCategory() {
+
+            var categoryChildSelect = document.getElementById("categoryChildSelectRemove").value;
+            console.log(categoryChildSelect);
+            var url = '/api/categories/';
+            var categoryModifyRequestDto = new Object();
+            categoryModifyRequestDto["categoryId"] = categoryChildSelect;
+
+            var param = JSON.stringify(categoryModifyRequestDto);
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                contentType: "application/json",
+                data: param,
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    alert("삭제가 완료되었습니다.");
+                    location.href = "/admin/categories";
+                },
+                error: function (xhr) {
+                    console.error("에러 메시지: ", xhr.responseJSON.message);
+                    console.error("에러 발생 시간: ", xhr.responseJSON.timestamp);
+                    console.error("HTTP 상태 코드: ", xhr.status);
+                    alert("에러 메시지: " + xhr.responseJSON.message +
+                        " 하위 카테고리에 속한 아이템을 먼저 이동/삭제 해주세요.");
+                    location.href = "/admin/categories";
+                }
+
+            })
+        }
+
+        // function moveItemAnotherChildCategory() {
+        //     var removeItemCategoryChildId = document.getElementById("removeItemCategoryChildId").value;
+        //
+        //     var url = "/api/items/category/" + removeItemCategoryChildId;
+        //
+        //     var dataList = new Array();
+        //     var paramData = new Object();
+        //
+        //     $("input[name=itemChkBox]:checked").each(function () {
+        //         var cartItemId = removeItemCategoryChildId;
+        //         var data = new Object();
+        //         data[""] = ;
+        //         dataList.push(data);
+        //     });
+        //
+        //     paramData['']
+        //
+        //
+        // }
+
+        function moveItemAnotherChildCategory() {
+            var categoryId = document.getElementById("removeItemCategoryChildId").value;
+
+            var url = "/api/items/categories/" + categoryId;
+
+            var dataList = [];
+            var paramData = {};
+
+            $("input[name=itemChkBox]:checked").each(function () {
+                var itemId = $(this).val(); // 체크된 체크박스의 값 (itemId) 가져오기
+                dataList.push(itemId);
+            });
+
+            paramData['targetCategoryId'] = categoryId; // 대상 카테고리 ID 설정
+            paramData['itemIdList'] = dataList; // 체크된 아이템 ID 목록 설정
+
+            // 서버로 paramData 객체를 JSON 형태로 전송 (예시는 jQuery를 사용한 AJAX 요청)
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json",
+                data: JSON.stringify(paramData),
+                success: function (response) {
+                    // 서버 응답 처리
+                    alert('아이템 ' + dataList + ' 가 중분류 ' + categoryId + '로 이동');
+                    location.href = "/admin/categories";
+                },
+                error: function (xhr) {
+                    // 에러 처리
+                    console.error("에러 메시지: ", xhr.responseJSON.message);
+                    console.error("에러 발생 시간: ", xhr.responseJSON.timestamp);
+                    console.error("HTTP 상태 코드: ", xhr.status);
+                    alert("에러 메시지: " + xhr.responseJSON.message);
+                    location.href = "/admin/categories";
+                }
+            });
+        }
 
     </script>
 

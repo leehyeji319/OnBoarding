@@ -44,7 +44,7 @@ public class CartApiController {
 	@LoginCheck
 	@ValidUser
 	@PostMapping("/items/{itemId}")
-	public String addCartWithUser(@CurrentUser User loginUser, @PathVariable("itemId") long itemId,
+	public @ResponseBody ResponseEntity<?> addCartWithUser(@CurrentUser User loginUser, @PathVariable("itemId") long itemId,
 		@RequestParam(defaultValue = "/") String redirectURL,
 		@RequestParam(value = "count", required = false) Integer count) {
 		long userId = loginUser.getId();
@@ -57,8 +57,8 @@ public class CartApiController {
 			cartService.addCartItem(userId, itemId, count);
 		}
 
-		return "redirect:" + redirectURL;
-
+		// return "redirect:" + redirectURL;
+		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 
 	// @LoginCheck
@@ -131,6 +131,7 @@ public class CartApiController {
 
 
 		cartService.orderCartItem(cartOrderDtoList, loginUser.getId());
+
 		// navbar update를 위해 session값을 강제로 update해줬다..
 		User updateUser = userRepository.findById(loginUser.getId()).get();
 		session.setAttribute(SessionConstants.LOGIN_USER, updateUser);

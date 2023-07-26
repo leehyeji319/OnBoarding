@@ -182,6 +182,7 @@ public class AdminController {
 		CategoryModifyRequestDto categoryModifyRequestDto = new CategoryModifyRequestDto();
 		model.addAttribute("categoryModifyRequestDto", categoryModifyRequestDto);
 
+
 		return "admin/categorySetting";
 	}
 

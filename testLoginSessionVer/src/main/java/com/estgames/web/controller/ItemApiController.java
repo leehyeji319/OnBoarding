@@ -2,10 +2,14 @@ package com.estgames.web.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,9 +18,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.estgames.common.annotation.CurrentUser;
@@ -28,8 +34,11 @@ import com.estgames.db.entiity.Item;
 import com.estgames.db.entiity.User;
 import com.estgames.db.repsitory.CategoryRepository;
 import com.estgames.db.repsitory.ItemRepository;
+import com.estgames.web.dto.cart.CartOrderDto;
+import com.estgames.web.dto.category.CategoryModifyRequestDto;
 import com.estgames.web.dto.category.CategoryParentsResponseDto;
 import com.estgames.web.dto.item.ItemModifyRequestDto;
+import com.estgames.web.dto.item.ItemMoveDto;
 import com.estgames.web.dto.item.ItemResponseDto;
 import com.estgames.web.dto.item.ItemSaveRequestDto;
 import com.estgames.web.service.CategoryService;
@@ -53,7 +62,9 @@ public class ItemApiController {
 
 	@LoginCheck
 	@GetMapping("/categories/{categoryId}")
-	public String getItemListWithCategoryId(@PathVariable("categoryId") long categoryId, Model model) {
+	public String getItemListWithCategoryId(@PathVariable("categoryId") long categoryId,
+		@RequestParam(value = "type", required = false) String type,
+		Model model) {
 		log.error("카테고리 조회로 성공적으로 컨트롤러까지 왔어요. categoryId: " + categoryId);
 
 		// 카테고리 별로 아이템 호출
@@ -64,8 +75,12 @@ public class ItemApiController {
 		// modelAndView.addObject("itemList", itemList);
 
 		// return modelAndView;
+		if (type.equals("category")) {
+			return "admin/categorySetting :: #items";
+		}
 
 		return "admin/itemSetting :: #items";
+		// return "'#' :: #items";
 	}
 
 	@LoginCheck
@@ -192,15 +207,20 @@ public class ItemApiController {
 	@LoginCheck
 	@ValidAdmin
 	@PutMapping("/{itemId}/main")
-	public String addItemToMain(@CurrentUser User loginUser, @PathVariable("itemId") long itemId, Model model) {
+	public @ResponseBody ResponseEntity<List<ItemResponseDto>> addItemToMain(@CurrentUser User loginUser,
+		@PathVariable("itemId") long itemId, Model model) {
+
 		log.info("메인에 추가할 아이템~~ itemId : " + itemId);
+
 		itemService.addItemToMain(itemId);
 
 		//현재 메인 아이템들을 찾아서 보여준다.
 		List<ItemResponseDto> mainItemList = itemService.findMainItemList();
 		model.addAttribute("mainItemListDto", mainItemList);
 
-		return "/admin/mainSetting";
+		// return "/admin/mainSetting";
+		return ResponseEntity.ok(mainItemList);
+
 	}
 
 	//아이템 메인에서 삭제
@@ -208,7 +228,9 @@ public class ItemApiController {
 	@ValidAdmin
 	@DeleteMapping("/{itemId}/main")
 	public String removeItemToMain(@CurrentUser User loginUser, @PathVariable("itemId") long itemId, Model model) {
+
 		log.info("메인에서 삭제할 아이템~~ itemId : " + itemId);
+
 		itemService.removeItemToMain(itemId);
 
 		//현재 메인 아이템들을 찾아서 보여준다.
@@ -334,7 +356,6 @@ public class ItemApiController {
 
 	}
 
-
 	//삭제된 아이템 상세보기 페이지
 	@LoginCheck
 	@ValidAdmin
@@ -371,4 +392,17 @@ public class ItemApiController {
 		model.addAttribute("categoryList", categoryList);
 		return "item/itemRemoveList";
 	}
+
+	@LoginCheck
+	@ValidAdmin
+	@PostMapping("/categories/{categoryId}")
+	public @ResponseBody ResponseEntity orderCartItem(@CurrentUser User loginUser,
+		@PathVariable("categoryId") String categoryId, @RequestBody ItemMoveDto requestDto) {
+
+		log.error("잘들어왔는지 확인" + requestDto.toString());
+		itemService.modifyItemsCategory(requestDto);
+
+		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
+
 }

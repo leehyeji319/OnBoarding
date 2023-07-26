@@ -44,27 +44,38 @@
                                                                                        alt=""></button>
                                 </form>
                             </div>
+<!--                            <div class="col">-->
+<!--                                <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                    <input type="hidden" name="redirectURL"-->
+<!--                                           th:value="'/users/item?page=' + ${userItemList.number + 1}"/>-->
+<!--                                    <button type="submit" class="btn btn-link btn-sm"-->
+<!--                                            onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}"-->
+<!--                                                                                       width="20px" height="20px"-->
+<!--                                                                                       alt=""></button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                            <div class="col">-->
+<!--&lt;!&ndash;                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <button type="submit" class="btn btn-link btn-sm"&ndash;&gt;-->
+<!--&lt;!&ndash;                                            onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                               width="20px"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                               height="20px" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </form>&ndash;&gt;-->
+<!--                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                    <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>-->
+<!--                                </form>-->
+<!--                            </div>-->
                             <div class="col">
-                                <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                    <input type="hidden" name="redirectURL"
-                                           th:value="'/users/item?page=' + ${userItemList.number + 1}"/>
-                                    <button type="submit" class="btn btn-link btn-sm"
-                                            onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}"
-                                                                                       width="20px" height="20px"
-                                                                                       alt=""></button>
-                                </form>
+                                <button type="button" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartItem(this)">
+                                    <img th:src="@{/img/cart.png}" width="20px" height="20px" alt="">
+                                </button>
                             </div>
                             <div class="col">
-<!--                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
-<!--                                    <button type="submit" class="btn btn-link btn-sm"-->
-<!--                                            onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}"-->
-<!--                                                                                               width="20px"-->
-<!--                                                                                               height="20px" alt="">-->
-<!--                                    </button>-->
-<!--                                </form>-->
-                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                    <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
-                                </form>
+                                <button type="submit" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartToOrder(this)">
+                                    <img th:src="@{/img/pay.png}" width="20px" height="20px" alt="">
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -116,28 +127,40 @@
                                                                                        alt=""></button>
                                 </form>
                             </div>
-                            <div class="col">
-                                <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                    <input type="hidden" name="redirectURL"
-                                           th:value="'/api/items/categories/' + ${categoryId} +'/user?page=' + ${userItemList.number + 1}"/>
-                                    <button type="submit" class="btn btn-link btn-sm"
-                                            onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}"
-                                                                                       width="20px" height="20px"
-                                                                                       alt=""></button>
-                                </form>
-                            </div>
-                            <div class="col">
-<!--                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                            <div class="col">-->
+<!--                                <form th:action="@{/api/cart/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                    <input type="hidden" name="redirectURL"-->
+<!--                                           th:value="'/api/items/categories/' + ${categoryId} +'/user?page=' + ${userItemList.number + 1}"/>-->
 <!--                                    <button type="submit" class="btn btn-link btn-sm"-->
-<!--                                            onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}"-->
-<!--                                                                                               width="20px"-->
-<!--                                                                                               height="20px" alt="">-->
-<!--                                    </button>-->
+<!--                                            onclick="showAlert('장바구니에 추가되었습니다.')"><img th:src="@{/img/cart.png}"-->
+<!--                                                                                       width="20px" height="20px"-->
+<!--                                                                                       alt=""></button>-->
 <!--                                </form>-->
-                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">
-                                    <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>
-                                </form>
+<!--                            </div>-->
+<!--                            <div class="col">-->
+<!--&lt;!&ndash;                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <button type="submit" class="btn btn-link btn-sm"&ndash;&gt;-->
+<!--&lt;!&ndash;                                            onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                               width="20px"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                               height="20px" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </form>&ndash;&gt;-->
+<!--                                <form th:action="@{/api/order/items/{itemId}(itemId=${item.itemId})}" th:method="post">-->
+<!--                                    <button type="submit" class="btn btn-link btn-sm" onclick="showAlert('구매 주문을 위해 장바구니로 이동합니다.')"><img th:src="@{/img/pay.png}" width="20px" height="20px" alt=""></button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+                            <div class="col">
+                                <button type="button" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartItem(this)">
+                                    <img th:src="@{/img/cart.png}" width="20px" height="20px" alt="">
+                                </button>
                             </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-link btn-sm" th:data-id="${item.itemId}" onclick="addCartToOrder(this)">
+                                    <img th:src="@{/img/pay.png}" width="20px" height="20px" alt="">
+                                </button>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>

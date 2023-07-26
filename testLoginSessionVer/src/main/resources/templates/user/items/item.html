@@ -1,118 +1,177 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <div th:replace="template/fragment/header.html :: fragment-header"></div>
-  <style>
-    .side_menu {
-      position: fixed;
-      width: 250px;
-      background-color: #f5f5f5;
-      padding: 10px;
-      border-radius: 5px;
-      height: 100%;
-      min-height: 100vh;
-    }
+    <div th:replace="template/fragment/header.html :: fragment-header"></div>
+    <style>
+        .side_menu {
+            position: fixed;
+            width: 250px;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            height: 100%;
+            min-height: 100vh;
+        }
 
-    .side_menu ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
+        .side_menu ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    .side_menu a {
-      display: block;
-      color: #333;
-      padding: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
+        .side_menu a {
+            display: block;
+            color: #333;
+            padding: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
 
-    .side_menu a:hover {
-      background-color: #eee;
-    }
+        .side_menu a:hover {
+            background-color: #eee;
+        }
 
-    .side_menu ul ul {
-      display: block;
-      padding-left: 10px;
-    }
+        .side_menu ul ul {
+            display: block;
+            padding-left: 10px;
+        }
 
-    .side_menu ul ul a {
-      font-weight: normal;
-    }
+        .side_menu ul ul a {
+            font-weight: normal;
+        }
 
-    /* .side_menu li:hover > ul {
-        display: block;
-      } */
-  </style>
+        /* .side_menu li:hover > ul {
+            display: block;
+          } */
+    </style>
 </head>
 <body>
 <!--Navigation-->
 <div th:replace="template/fragment/nav-user.html :: fragment-nav-user"></div>
 <div class="row">
-  <div class="col-2">
-    <div th:insert="template/fragment/sidebar-user.html :: fragment-sidebar-user"></div>
-  </div>
-  <div class="col-1"></div>
-  <div class="col-6">
-    <div class="row mt-3">
-      <div th:if="${categoryId != null and keyword == null}">
-        <p><span th:text="${categoryParentName}"></span> > <span th:text="${categoryChildName}"></span></p>
-      </div>
-      <div th:if="${categoryId == null and keyword == null}">
-        <p>전체</p>
-      </div>
-      <div th:if="${keyword != null}">
-        <span>검색어 : </span><span th:text="${keyword}"></span>
-      </div>
-      <div id="items" class="mb-1">
-        <div th:replace="user/items/items-user :: itemList-user"></div>
-      </div>
+    <div class="col-2">
+        <div th:insert="template/fragment/sidebar-user.html :: fragment-sidebar-user"></div>
     </div>
+    <div class="col-1"></div>
+    <div class="col-6">
+        <div class="row mt-3">
+            <div th:if="${categoryId != null and keyword == null}">
+                <p><span th:text="${categoryParentName}"></span> > <span th:text="${categoryChildName}"></span></p>
+            </div>
+            <div th:if="${categoryId == null and keyword == null}">
+                <p>전체</p>
+            </div>
+            <div th:if="${keyword != null}">
+                <span>검색어 : </span><span th:text="${keyword}"></span>
+            </div>
+            <div id="items" class="mb-1">
+                <div th:replace="user/items/items-user :: itemList-user"></div>
+            </div>
+        </div>
 
 
-
-  </div>
-  <div class="col-3"></div>
+    </div>
+    <div class="col-3"></div>
 </div>
 <script th:inline="javascript">
 
-  //category click event
-  $(document).ready(function () {
-    $('.side_menu ul li a').click(function () {
-      // var categoryId = $(this).data('categoryId');
-      $(this).siblings('ul').slideToggle();
-      // loadItems(categoryId);
+    //category click event
+    $(document).ready(function () {
+        $('.side_menu ul li a').click(function () {
+            // var categoryId = $(this).data('categoryId');
+            $(this).siblings('ul').slideToggle();
+            // loadItems(categoryId);
+        });
     });
-  });
 
-  var userItemList = /*[[${userItemList}]]*/;
-  // console.log(userItemList);
+    var userItemList = /*[[${userItemList}]]*/;
+    // console.log(userItemList);
 
-  //버튼 눌렀을 때 알람
-  function showAlert(message) {
-    alert(message);
-  }
-
-  //제목이 길면 짤라주는 코드
-  /*<![CDATA[*/
-  var cardTitlesFull = document.querySelectorAll(".card-title-full");
-  var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
-  var maxLength = 7; // 제목의 최대 길이 설정
-
-  Array.from(cardTitlesFull).forEach(function(titleFull, index) {
-    var titleTruncated = cardTitlesTruncated[index];
-
-    if (titleFull.textContent.length > maxLength) {
-      titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
-      titleFull.style.display = "none";
-      titleTruncated.style.display = "inline";
-    } else {
-      titleFull.style.display = "inline";
-      titleTruncated.style.display = "none";
+    //버튼 눌렀을 때 알람
+    function showAlert(message) {
+        alert(message);
     }
-  });
-  /*]]>*/
+
+    //제목이 길면 짤라주는 코드
+    /*<![CDATA[*/
+    var cardTitlesFull = document.querySelectorAll(".card-title-full");
+    var cardTitlesTruncated = document.querySelectorAll(".card-title-truncated");
+    var maxLength = 7; // 제목의 최대 길이 설정
+
+    Array.from(cardTitlesFull).forEach(function (titleFull, index) {
+        var titleTruncated = cardTitlesTruncated[index];
+
+        if (titleFull.textContent.length > maxLength) {
+            titleTruncated.textContent = titleFull.textContent.slice(0, maxLength) + "...";
+            titleFull.style.display = "none";
+            titleTruncated.style.display = "inline";
+        } else {
+            titleFull.style.display = "inline";
+            titleTruncated.style.display = "none";
+        }
+    });
+    /*]]>*/
+
+    function addCartItem(obj) {
+        // var itemId = obj.dataset.id;
+        // var itemId = obj.getAttribute('data-id');
+        var itemId = obj.getAttribute('data-id');
+
+
+        console.log(itemId)
+        var url = '/api/cart/items/' + itemId;
+
+        console.log('잘 들어왔어요!! ' + itemId);
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+            success: function (result, status) {
+                console.log("cartItem count update success");
+                alert("장바구니에 추가되었습니다. itemId: " + itemId + '성공!!!');
+                location.href = '#';
+            },
+            error: function (xhr, result, status) {
+                console.log("cartItem count update failed");
+                alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
+                location.href = '#';
+            }
+        });
+
+    }
+
+    function addCartToOrder(obj) {
+        // var itemId = obj.dataset.id;
+        // var itemId = obj.getAttribute('data-id');
+        var itemId = obj.getAttribute('data-id');
+
+
+        console.log(itemId)
+        var url = '/api/cart/items/' + itemId;
+
+        console.log('잘 들어왔어요!! ' + itemId);
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+            success: function (result, status) {
+                console.log("cartItem count update success");
+                alert('구매 주문을 위해 장바구니로 이동합니다.');
+                location.href = '/users/cart';
+            },
+            error: function (xhr, result, status) {
+                console.log("cartItem count update failed");
+                alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
+                location.href = '/users/cart';
+            }
+        });
+
+    }
 
 
 </script>

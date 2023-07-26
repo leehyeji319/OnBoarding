@@ -10,11 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.estgames.common.exception.CustomException;
+import com.estgames.common.exception.ExceptionFactory;
 import com.estgames.db.entiity.BannerFileInfo;
 import com.estgames.db.entiity.CartItem;
 import com.estgames.db.entiity.ItemFileInfo;
@@ -24,6 +27,7 @@ import com.estgames.db.repsitory.CartRepository;
 import com.estgames.db.repsitory.ItemFileInfoRepository;
 import com.estgames.web.dto.item.ItemImgDto;
 import com.estgames.web.dto.item.ItemModifyRequestDto;
+import com.estgames.web.dto.item.ItemMoveDto;
 import com.estgames.web.dto.item.ItemResponseDto;
 import com.estgames.web.dto.item.ItemSaveRequestDto;
 import com.estgames.web.dto.item.ItemSaveResponseDto;
@@ -728,7 +732,8 @@ public class ItemService {
 				"해당 id의 아이템이 존재하지 않습니다. itemId : " + itemId));
 
 		if (item.isMain()) {
-			throw new IllegalArgumentException("이미 main에 등록되어있는 item입니다.");
+			// throw new IllegalArgumentException("이미 main에 등록되어있는 item입니다.");
+			throw ExceptionFactory.invalidRegisterMainItem();
 		}
 
 		//메인 아이템에 이미 12개 이상이면 더 못넣음
@@ -933,4 +938,30 @@ public class ItemService {
 		return result;
 	}
 
+	@Transactional
+	public void modifyItemsCategory(ItemMoveDto requestDto) {
+
+		Long targetCategoryId = requestDto.getTargetCategoryId();
+		Category findCategory = categoryRepository.findById(targetCategoryId).orElseThrow(
+			() -> new CustomException(HttpStatus.NOT_FOUND, "해당 id의 category가 존재하지 않습니다.")
+		);
+
+		if (findCategory.getParent() == null) {
+			throw new CustomException(HttpStatus.BAD_REQUEST, "중분류 카테고리로만 아이템을 이동할 수 있습니다.");
+		}
+
+		List<Long> itemIdList = requestDto.getItemIdList();
+
+		for (Long itemId : itemIdList) {
+			Item findItem = itemRepository.findById(itemId).orElseThrow(
+				() -> new CustomException(HttpStatus.NOT_FOUND, "해당 id의 item이 존재하지 않습니다.")
+			);
+
+			itemRepository.save(findItem.toBuilder()
+				.id(itemId)
+				.category(findCategory)
+				.build());
+		}
+
+	}
 }

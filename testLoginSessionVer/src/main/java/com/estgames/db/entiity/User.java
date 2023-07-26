@@ -39,10 +39,10 @@ public class User implements Serializable {
 	@Column(name = "user_id", nullable = false, updatable = false)
 	private long id;
 
-	@Column(name = "user_loginId", nullable = false, updatable = false, length = 20)
+	@Column(name = "user_loginId", nullable = false, updatable = false, length = 50)
 	private String loginId;
 
-	@Column(name = "user_password", nullable = false, length = 20)
+	@Column(name = "user_password", nullable = false, length = 50)
 	private String password;
 
 	@Column(name = "user_name", nullable = false, length = 20)

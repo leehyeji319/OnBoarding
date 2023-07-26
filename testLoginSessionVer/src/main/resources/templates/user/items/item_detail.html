@@ -249,7 +249,8 @@
                     alert("장바구니에 추가되었습니다. itemId: " + itemId);
                     location.href = '/api/items/' + itemId;
                 },
-                error: function (result, status) {
+                error: function (xhr, result, status) {
+                    console.log("cartItem count update failed");
                     alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
                     location.href = '/api/items/' + itemId;
                 }
@@ -306,11 +307,11 @@
                 cache: false,
                 success: function (result, status) {
                     console.log("cartItem count update success");
-                    alert("장바구니에 추가되었습니다. itemId: " + itemId);
+                    alert("구매를 위해 장바구니로 이동합니다. itemId: " + itemId);
                     location.href = '/users/cart';
                 },
                 error: function (result, status) {
-                    // alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
+                    alert('이미 장바구니에 추가된 상품입니다. itemId: ' + itemId);
                     location.href = '/users/cart';
                 }
             });
@@ -330,7 +331,7 @@
                     location.href = '/api/items/' + itemId;
                 },
                 error: function (result, status) {
-                    alert("장바구니에 추가되었습니다. itemId: " + itemId);
+                    alert("이미 장바구니에 추가되었습니다. itemId: " + itemId);
                     location.href = '/api/items/' + itemId;
                 }
             });

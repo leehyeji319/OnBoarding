@@ -15,6 +15,11 @@
         .search form {
             margin-bottom: 20px;
         }
+
+        #sortable { list-style-type: none; margin: 3px; padding: 3px; width: 60%; }
+        #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+        #sortable li span { position: absolute; margin-left: -1.3em; }
+
     </style>
 </head>
 <body>
@@ -80,16 +85,23 @@
                     </thead>
                     <tbody>
                     <tr th:each="searchItem : ${itemSearchResultList}" th:onclick="">
-                        <td th:text="${searchItem.getItemId()}"></td>
-                        <td th:text="${searchItem.getFirstCategoryName()}"></td>
-                        <td th:text="${searchItem.getSecondCategoryName()}"></td>
-                        <td th:text="${searchItem.getItemName()}"></td>
-                        <td th:text="${searchItem.getItemPrice()}"></td>
+                        <td th:text="${searchItem.itemId}"></td>
+                        <td th:text="${searchItem.firstCategoryName}"></td>
+                        <td th:text="${searchItem.secondCategoryName}"></td>
+                        <td th:text="${searchItem.itemName}"></td>
+                        <td th:text="${searchItem.itemPrice}"></td>
                         <td>
-                            <form th:action="@{/api/items/{itemId}/main(itemId=${searchItem.getItemId()})}"
-                                  th:method="put">
-                                <button type="submit" class="btn btn-primary">추가</button>
-                            </form>
+<!--                            <form th:action="@{/api/items/{itemId}/main(itemId=${searchItem.getItemId()})}"-->
+<!--                                  th:method="put">-->
+<!--                                <button type="submit" class="btn btn-primary">추가</button>-->
+<!--                            </form>-->
+                            <div class="col">
+                                <button type="submit" class="btn btn-link btn-sm" th:data-id="${searchItem.itemId}"
+                                        onclick="addItemToMain(this)">
+                                    추가
+                                </button>
+
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${itemSearchResultList.size() == 0}">
@@ -99,29 +111,77 @@
                 </table>
             </section>
         </div>
+
+<!--        <p> 다른거 테스트 ^^ 드로그 앤 드랍 보기</p>-->
+<!--        <ul id="sortable">-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>-->
+<!--            <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>-->
+<!--        </ul>-->
+
     </div>
     <div class="col-3"></div>
 
 </div>
 
+<th:block>
+    <script th:inline="javascript">
+        function confirmAddItem(row) {
+            var itemId = row.cells[0].textContent;
+            var itemName = row.cells[1].textContent;
+            var confirmMessage = '메인 아이템에 추가하시겠습니까?\n\n아이템 ID: ' + itemId + '\n이름: ' + itemName;
 
-<script th:inline="javascript">
-    function confirmAddItem(row) {
-        var itemId = row.cells[0].textContent;
-        var itemName = row.cells[1].textContent;
-        var confirmMessage = '메인 아이템에 추가하시겠습니까?\n\n아이템 ID: ' + itemId + '\n이름: ' + itemName;
+            if (confirm(confirmMessage)) {
+                // 예 버튼 클릭 시 수행할 작업
+                // 예를 선택한 경우에는 추가 작업을 수행하도록 원하는 코드를 작성합니다.
+                location.href = "/admin/items/" + itemId;
 
-        if (confirm(confirmMessage)) {
-            // 예 버튼 클릭 시 수행할 작업
-            // 예를 선택한 경우에는 추가 작업을 수행하도록 원하는 코드를 작성합니다.
-            location.href = "/admin/items/" + itemId;
-
-        } else {
-            // 아니오 버튼 클릭 시 수행할 작업
-            // 아니오를 선택한 경우에는 추가 작업을 수행하지 않도록 원하는 코드를 작성합니다.
+            } else {
+                // 아니오 버튼 클릭 시 수행할 작업
+                // 아니오를 선택한 경우에는 추가 작업을 수행하지 않도록 원하는 코드를 작성합니다.
+            }
         }
-    }
-</script>
+
+        function addItemToMain(obj) {
+            var itemId = obj.getAttribute('data-id');
+
+            var url = '/api/items/' + itemId + '/main'
+
+            $.ajax({
+                url: url,
+                type: "PUT",
+                dataType: "json",
+                success: function (result, status) {
+                    alert('메인 아이템에 추가되었습니다.');
+                    location.href = '/admin/main/items';
+                    // console.log(result);
+                },
+                error: function (xhr, result, status) {
+                    // alert('이미 메인에 설정된 아이템이 12개입니다. ' + itemId);
+                    console.error("에러 메시지: ", xhr.responseJSON.message);
+                    console.error("에러 발생 시간: ", xhr.responseJSON.timestamp);
+                    console.error("HTTP 상태 코드: ", xhr.status);
+                    alert("에러 메시지: " + xhr.responseJSON.message + " 에러 발생 시간: " + xhr.responseJSON.timestamp);
+                    location.href = '#';
+                }
+            })
+        }
+
+
+        // jQuery ui 를 이용하여 드래그 앤 드롭 기능 수정
+        // $(function() {
+        //     $("#sortable").sortable();
+        //     $("#sortable").disableSelection();
+        // });
+
+    </script>
+
+</th:block>
+
 
 </body>
 </html>
